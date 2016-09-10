@@ -6,10 +6,14 @@
 #define EFIC_MAX 0.22 //eficiência máxima de um painel
 
 /*
-	Este programa realiza o controle de matrizes.
+	Este programa realiza o controle de matrizes, 
+	utilizando como tema o gerenciamentos dos 
+	painéis solares de uma usina.
+	
 	Componentes:
 		Mat:			Nome:
-
+		201602493		Gustavo Henrique da Silva Batista
+		201609824		Saulo de Araújo Calixto
 
 
 	TAD: Dados int e float
@@ -20,6 +24,7 @@
 	5 - Caclular média de elementos de matrizes
 	6 - Exibir matriz
 	7 - Buscar elementos na matriz
+	8 - Gerar um relatório dos dados presentes na matriz
 */
 
 
@@ -45,7 +50,7 @@ void Ler_Mat(vetor_solar a) {
 
 	for(i = 0; i < TAM; i++){
 		a[i].ativo = 1;
-        printf("\nEntre com quantos Watts o painel [%d][%d] gerou: ", i + 1, i + 1);
+        printf("\n\nEntre com quantos Watts o painel [%d][%d] gerou: ", i + 1, i + 1);
         scanf("%f", &a[i].geracao);
         a[i].eficiencia = ((a[i].geracao / AREA) / EFIC_MAX) / 10;
         printf("\nA eficiencia do painel [%d][%d] e: %.2f%%", i + 1, i + 1, a[i].eficiencia);
@@ -185,7 +190,28 @@ void Relatorio (vetor_solar a){
 	else{
 		printf("*  Media Energ. Ger.: %.2f\t\t*\n", somaWatts/(TAM*TAM)); //a média é em relação todos os paineis, até os desativados
 	}
-    printf("*  Eficiencia: %.2f%%\t\t\t*\n", eficienciatotal );
+    printf("*  Media Eficiencia: %.2f%%\t\t*\n", eficienciatotal );
+    if(eficienciatotal >= 16){
+    	printf("*  EFICIENCIA ALTA\t\t\t*\n");
+	}
+	else{
+		if(eficienciatotal >= 15){
+			printf("*  ACIMA DA MEDIA DE EFICIENCIA\t\t*\n");
+		}
+		else{
+			if(eficienciatotal >= 14){
+				printf("*  EFICIENCIA MEDIA\t\t\t*\n");
+			}
+			else{
+				if(eficienciatotal >= 13){
+					printf("*  ABAIXO DA MEDIA DE EFICIENCIA\t\t*\n");
+				}
+				else{
+					printf("*  EFICIENCIA BAIXA\t\t\t*\n");
+				}
+			}
+		}
+	}
     printf("*  \t\t\t\t\t*\n*\t\t\t\t\t*\n*****************************************\n");
 
 }

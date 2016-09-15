@@ -7,10 +7,10 @@
 #define EFIC_MAX 0.22 //eficiência máxima de um painel
 
 /*
-	Este programa realiza o controle de matrizes, 
-	utilizando como tema o gerenciamentos dos 
+	Este programa realiza o controle de matrizes,
+	utilizando como tema o gerenciamentos dos
 	painéis solares de uma usina.
-	
+
 	Componentes:
 		Mat:			Nome:
 		201602493		Gustavo Henrique da Silva Batista
@@ -39,7 +39,7 @@ typedef Painel vetor_solar[M];
 
 void Inicializar(vetor_solar a){
 	int i;
-	
+
 	for(i = 0; i < TAM; i++){
 		a[i].geracao = 0;
 	    a[i].eficiencia = 0;
@@ -54,10 +54,10 @@ int Map_Mat(int i, int j){
 
 void Ler_Mat(vetor_solar a) {
 	int i, j, k = 0;
-	
+
 	for(i = 0; i < TAM; i++){
 		for(j = 0; j <= i; j++){
-			printf("\nEntre se o painel [%d][%d] esta ativo: ", i + 1, j + 1);
+			printf("\nEntre se o painel [%d][%d] esta ativo: \n0 - NAO\n1 - SIM\n", i + 1, j + 1);
 			scanf("%d", &a[k].ativo);
 			if(a[k].ativo){
 				printf("Entre com quantos Watts o painel [%d][%d] gerou: ", i + 1, j + 1);
@@ -69,7 +69,7 @@ void Ler_Mat(vetor_solar a) {
 				a[k].geracao = 0;
 				a[k].eficiencia = 0;
 			}
-			
+
         	k++;
 		}
 	}
@@ -96,7 +96,7 @@ void Exibir_Mat(vetor_solar a) {
 				if(a[k].ativo)
 					printf("SIM");
 				else
-					printf("NAO");	
+					printf("NAO");
 			}
             else{
             	k = Map_Mat(i + 1, j + 1);
@@ -106,7 +106,7 @@ void Exibir_Mat(vetor_solar a) {
 					printf("NAO");
 			}
             printf("\t\t");
-            
+
         }
 
         printf("\n");
@@ -124,8 +124,8 @@ void Exibir_Mat(vetor_solar a) {
             	printf("Ger.: %.2f W", a[k].geracao );
                 if(a[k].geracao > 9999 || a[k].geracao < -999) printf("\t");
             	else printf("\t\t");
-			}  
-			
+			}
+
         }
         printf("\n");
 
@@ -143,7 +143,7 @@ void Exibir_Mat(vetor_solar a) {
                 if(a[k].eficiencia > 9999 || a[k].eficiencia < -999) printf("\t");
            		else printf("\t\t");
 			}
-			
+
         }
         printf("\n\n");
     }
@@ -152,7 +152,7 @@ void Exibir_Mat(vetor_solar a) {
 
 void Somar_Mat(vetor_solar a, vetor_solar b, vetor_solar c) {
 	int i;
-    
+
 	for(i = 0; i < M; i++){
 		c[i].ativo = a[i].ativo + b[i].ativo;
 		c[i].geracao = (a[i].geracao) + (b[i].geracao);
@@ -171,7 +171,7 @@ void Subtrair_Mat(vetor_solar a, vetor_solar b, vetor_solar c) {
         c[j].eficiencia = ((c[j].geracao / (AREA * 2)) / EFIC_MAX) / 10;
         //Ativo continua como soma, pois se um deles estiver ativo, já basta.
     }
-    
+
     Exibir_Mat(c);
 }
 
@@ -256,25 +256,51 @@ void Relatorio (vetor_solar a){
 }
 
 void Buscar_Elemento_Mat(int f, int i, int j, vetor_solar a) {
-	if(i == j){
+	int k;
+	if(i < j){
+        k = Map_Mat(j, i);
         switch(f){
         case 0:
-            printf("\n\n1 - ATIVADO"); //ativo
+            if(a[k].ativo)
+                printf("\n\nATIVADO");
+            else
+                printf("\n\DESATIVADO");
             break;
 
         case 1:
-            printf("\n\nO Painel[%d][%d] gerou um total de: %.2f W\n", i , i , a[i - 1].geracao); //geracao
+            printf("\n\nO Painel[%d][%d] gerou um total de: %.2f W\n", i , j , a[k].geracao); //geracao
             break;
 
         case 2:
-            printf("\n\nO Painel[%d][%d] apresentou uma eficiência de: %.2f%%\n", i, i, a[i - 1].eficiencia); //eficiencia
+            printf("\n\nO Painel[%d][%d] apresentou uma eficiencia de: %.2f%%\n", i, j, a[k].eficiencia); //eficiencia
             break;
 
         default:
             break;
         }
     }
-    else printf("\n\nPainel Solar[%d][%d] DESATIVADO\n", i, i);
+    	else{
+            k = Map_Mat(i, j);
+            switch(f){
+            case 0:
+                if(a[k].ativo)
+                    printf("\n\nATIVADO");
+                else
+                    printf("\n\DESATIVADO");
+                break;
+
+            case 1:
+                printf("\n\nO Painel[%d][%d] gerou um total de: %.2f W\n", i , j , a[k].geracao); //geracao
+                break;
+
+            case 2:
+                printf("\n\nO Painel[%d][%d] apresentou uma eficiencia de: %.2f%%\n", i, j, a[k].eficiencia); //eficiencia
+                break;
+
+            default:
+                break;
+        }
+    }
 }
 
 int Menu (int index, vetor_solar a, vetor_solar b, vetor_solar c){

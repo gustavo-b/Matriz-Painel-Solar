@@ -203,20 +203,33 @@ void Media_Mat(vetor_solar a, vetor_solar b, vetor_solar c) {
 
 void Relatorio (vetor_solar a){
 
-    int i;
+    int i = 0, quant_ativos = 0;
     float somaWatts = 0, somaEff = 0, eficienciatotal;
 
-    for(i = 0; i < TAM; i++){
-		somaWatts += a[i].geracao;
-		somaEff += a[i].eficiencia;
+    for(i = 0; i < M; i++){
+		if(Map_Mat(i, i) != i){ //A Matriz simétrica tem seu valor duplicado somente quando estamos fora da diagonal.
+            somaWatts += (a[i].geracao * 2);
+            somaEff += (a[i].eficiencia * 2);
+		}
+		else{
+            somaWatts += a[i].geracao;
+            somaEff += a[i].eficiencia;
+		}
+
+		if(a[i].ativo){
+            if(Map_Mat(i, i) != i) //A Matriz simétrica tem seu valor duplicado somente quando estamos fora da diagonal.
+                quant_ativos += 2;
+            else quant_ativos++;
+		}
+
     }
 
 	eficienciatotal = somaEff / (TAM * TAM);
 
     printf("\n************RELATORIO GERAL**************\n");
     printf("*  \t\t\t\t\t*\n*\t\t\t\t\t*\n");
-    printf("*  Paineis ativos: %d\t\t\t*\n", TAM);
-    printf("*  Paineis Desativados: %d\t\t*\n", (TAM*TAM) - TAM );
+    printf("*  Paineis Ativados: %d\t\t\t*\n", quant_ativos);
+    printf("*  Paineis Desativados: %d\t\t*\n", M - quant_ativos );
     if(somaWatts > 999999){
     	printf("*  Total Energ. Ger.: %.2f\t*\n", somaWatts);
 	}
@@ -224,10 +237,10 @@ void Relatorio (vetor_solar a){
 		printf("*  Total Energ. Ger.: %.2f\t\t*\n", somaWatts);
 	}
 	if((somaWatts/(TAM*TAM)) > 999999){
-    	printf("*  Media Energ. Ger.: %.2f\t*\n", somaWatts/(TAM*TAM)); //a média é em relação todos os paineis, até os desativados
+    	printf("*  Media Energ. Ger.: %.2f\t*\n", somaWatts / (TAM*TAM)); //a média é em relação todos os paineis, até os desativados
 	}
 	else{
-		printf("*  Media Energ. Ger.: %.2f\t\t*\n", somaWatts/(TAM*TAM)); //a média é em relação todos os paineis, até os desativados
+		printf("*  Media Energ. Ger.: %.2f\t\t*\n", somaWatts / (TAM*TAM)); //a média é em relação todos os paineis, até os desativados
 	}
     printf("*  Media Eficiencia: %.2f%%\t\t*\n", eficienciatotal );
     if(eficienciatotal >= 16){

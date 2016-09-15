@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #define TAM 4 //Definição do tamanho das colunas e linhas das matrizes.
+#define M (((TAM * TAM) + TAM) / 2) //Definição do tamanho do vetor da matriz especial.
 #define LIMITE 5 //Limite de erros possíveis
 #define AREA 100 //capacidade de geração dos painéis em Watt/hora
 #define EFIC_MAX 0.22 //eficiência máxima de um painel
@@ -34,7 +35,7 @@ typedef struct{
 	float eficiencia; //recebe ((geração/AREA)/EFIC_MAX)/10
 }Painel;
 
-typedef Painel vetor_solar[TAM];
+typedef Painel vetor_solar[M];
 
 void Inicializar(vetor_solar a){
 	int i;
@@ -45,20 +46,37 @@ void Inicializar(vetor_solar a){
 	}
 }
 
-void Ler_Mat(vetor_solar a) {
-	int i, j;
+int Map_Mat(int i, int j){
+	int k;
+	k = (((i * i) - i) / 2) + j - 1;
+	return k;
+}
 
+void Ler_Mat(vetor_solar a) {
+	int i, j, k = 0;
+	
 	for(i = 0; i < TAM; i++){
-		a[i].ativo = 1;
-        printf("\n\nEntre com quantos Watts o painel [%d][%d] gerou: ", i + 1, i + 1);
-        scanf("%f", &a[i].geracao);
-        a[i].eficiencia = ((a[i].geracao / AREA) / EFIC_MAX) / 10;
-        printf("\nA eficiencia do painel [%d][%d] e: %.2f%%", i + 1, i + 1, a[i].eficiencia);
+		for(j = 0; j <= i; j++){
+			printf("\nEntre se o painel [%d][%d] esta ativo: ", i + 1, j + 1);
+			scanf("%d", &a[k].ativo);
+			if(a[k].ativo){
+				printf("Entre com quantos Watts o painel [%d][%d] gerou: ", i + 1, j + 1);
+      			scanf("%f", &a[k].geracao);
+        		a[k].eficiencia = (float)((a[k].geracao / AREA) / EFIC_MAX) / 10;
+        		printf("A eficiencia do painel [%d][%d] e: %.2f%%\n", i + 1, j + 1, a[k].eficiencia);
+			}
+			else{
+				a[k].geracao = 0;
+				a[k].eficiencia = 0;
+			}
+			
+        	k++;
+		}
 	}
 }
 
 void Exibir_Mat(vetor_solar a) {
-    int i, j;
+    int i, j, k;
 
     for(i = 0; i < TAM; i++){
         for(j = 0; j < TAM; j++){
@@ -73,9 +91,20 @@ void Exibir_Mat(vetor_solar a) {
         for(j = 0; j < TAM; j++){
 
             printf("Ativo: ");
-            if(i == j)
-                printf("SIM");
-            else printf("NAO");
+            if(i < j){
+            	k = Map_Mat(j + 1, i + 1);
+				if(a[k].ativo)
+					printf("SIM");
+				else
+					printf("NAO");	
+			}
+            else{
+            	k = Map_Mat(i + 1, j + 1);
+				if(a[k].ativo)
+					printf("SIM");
+				else
+					printf("NAO");
+			}
             printf("\t\t");
             
         }
@@ -84,14 +113,17 @@ void Exibir_Mat(vetor_solar a) {
 
         for(j = 0; j < TAM; j++){
 
-            if( i == j){
-                printf("Ger.: %.2f W", a[i].geracao );
-                if(a[i].geracao > 9999 || a[i].geracao < -999) printf("\t");
+            if(i < j){
+            	k = Map_Mat(j + 1, i + 1);
+                printf("Ger.: %.2f W", a[k].geracao );
+                if(a[k].geracao > 9999 || a[k].geracao < -999) printf("\t");
             	else printf("\t\t");
             }
             else {
-            	printf("Ger.: 0.00 W" );
-            	printf("\t\t");
+            	k = Map_Mat(i + 1, j + 1);
+            	printf("Ger.: %.2f W", a[k].geracao );
+                if(a[k].geracao > 9999 || a[k].geracao < -999) printf("\t");
+            	else printf("\t\t");
 			}  
 			
         }
@@ -99,14 +131,17 @@ void Exibir_Mat(vetor_solar a) {
 
 		for(j = 0; j < TAM; j++){
 
-            if(i == j){
-                printf("Efic.: %.2f%%", a[i].eficiencia );
-                if(a[i].eficiencia > 9999 || a[i].eficiencia < -999) printf("\t");
+            if(i < j){
+            	k = Map_Mat(j + 1, i + 1);
+                printf("Efic.: %.2f%%", a[k].eficiencia );
+                if(a[k].eficiencia > 9999 || a[k].eficiencia < -999) printf("\t");
            		else printf("\t\t");
             }
             else {
-            	printf("Efic.: 0%%");
-            	printf("\t\t");
+            	k = Map_Mat(i + 1, j + 1);
+            	printf("Efic.: %.2f%%", a[k].eficiencia );
+                if(a[k].eficiencia > 9999 || a[k].eficiencia < -999) printf("\t");
+           		else printf("\t\t");
 			}
 			
         }
@@ -118,7 +153,8 @@ void Exibir_Mat(vetor_solar a) {
 void Somar_Mat(vetor_solar a, vetor_solar b, vetor_solar c) {
 	int i;
     
-	for(i = 0; i < TAM; i++){
+	for(i = 0; i < M; i++){
+		c[i].ativo = a[i].ativo + b[i].ativo;
 		c[i].geracao = (a[i].geracao) + (b[i].geracao);
         c[i].eficiencia = ((c[i].geracao / (AREA * 2)) / EFIC_MAX) / 10;
     }
@@ -129,10 +165,11 @@ void Somar_Mat(vetor_solar a, vetor_solar b, vetor_solar c) {
 void Subtrair_Mat(vetor_solar a, vetor_solar b, vetor_solar c) {
    int j;
 
-    for(j = 0; j < TAM; j++){
-            c[j].geracao = (a[j].geracao) - (b[j].geracao);
-            c[j].eficiencia = ((c[j].geracao / (AREA * 2)) / EFIC_MAX) / 10;
-            //Ativo continua como soma, pois se um deles estiver ativo, já basta.
+    for(j = 0; j < M; j++){
+    	c[j].ativo = a[j].ativo + b[j].ativo;
+        c[j].geracao = (a[j].geracao) - (b[j].geracao);
+        c[j].eficiencia = ((c[j].geracao / (AREA * 2)) / EFIC_MAX) / 10;
+        //Ativo continua como soma, pois se um deles estiver ativo, já basta.
     }
     
     Exibir_Mat(c);
@@ -141,9 +178,10 @@ void Subtrair_Mat(vetor_solar a, vetor_solar b, vetor_solar c) {
 void Multiplicar_Mat(vetor_solar a, vetor_solar b, vetor_solar c) {
 
 	Inicializar(c);
-    int i, j, k;
+    int i;
 
-	for (i = 0; i < TAM; i++) {
+	for (i = 0; i < M; i++) {
+		c[i].ativo = a[i].ativo + b[i].ativo;
 		c[i].geracao = (a[i].geracao * b[i].geracao);
     	c[i].eficiencia = ((c[i].geracao / (AREA * ((TAM * 2) - 1) )) / EFIC_MAX) / 100000;
 	}
@@ -154,7 +192,8 @@ void Multiplicar_Mat(vetor_solar a, vetor_solar b, vetor_solar c) {
 void Media_Mat(vetor_solar a, vetor_solar b, vetor_solar c) {
 	int j;
 
-	for(j = 0; j < TAM; j++){
+	for(j = 0; j < M; j++){
+		c[j].ativo = a[j].ativo + b[j].ativo;
 		c[j].geracao = (a[j].geracao + b[j].geracao) / 2;
 		c[j].eficiencia = (a[j].eficiencia + b[j].eficiencia) / 2;
 	}

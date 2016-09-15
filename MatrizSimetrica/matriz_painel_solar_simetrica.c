@@ -330,20 +330,20 @@ int Menu (int index, vetor_solar a, vetor_solar b, vetor_solar c){
 			printf("0 - Matriz A\n");
 			printf("1 - Matriz B\n");
 			scanf("%d", &escolha);
-                switch(escolha){
-                case 0:
-                    Ler_Mat(a);
-                    break;
+            switch(escolha){
+            case 0:
+                Ler_Mat(a);
+                break;
 
-                case 1:
-                    Ler_Mat(b);
-                    break;
+            case 1:
+                Ler_Mat(b);
+                break;
 
-                default:
-                    Menu(index, a, b, c);
-                    break;
-                }
-			break;
+            default:
+                Menu(index, a, b, c);
+                break;
+            }
+        break;
 
 		case 2:
 			Somar_Mat(a, b, c);
@@ -354,10 +354,10 @@ int Menu (int index, vetor_solar a, vetor_solar b, vetor_solar c){
 			int escolha;
 			scanf("%d", &escolha);
 			if(escolha == 1)
-                Subtrair_Mat(b, a, c);
-            else if(escolha == 0)
-                Subtrair_Mat(a, b, c);
-            else Menu(index, a, b, c);
+				Subtrair_Mat(b, a, c);
+			else if(escolha == 0)
+				Subtrair_Mat(a, b, c);
+			else Menu(index, a, b, c);
 			break;
 
 		case 4:
@@ -400,7 +400,7 @@ int Menu (int index, vetor_solar a, vetor_solar b, vetor_solar c){
 			scanf("%d", &opcao);
 
 			if(opcao > 2 || opcao < 0){
-                Menu(index, a, b, c);
+                		Menu(index, a, b, c);
 			}
 			else{
                 printf("Digite a posicao da matriz (1 a %d): ", TAM);
@@ -416,20 +416,20 @@ int Menu (int index, vetor_solar a, vetor_solar b, vetor_solar c){
 
                 switch(escolha){
                 case 0:
-                    Buscar_Elemento_Mat(opcao, i, j, a);
-                    break;
+                        Buscar_Elemento_Mat(opcao, i, j, a);
+                        break;
 
                 case 1:
                     Buscar_Elemento_Mat(opcao, i, j, b);
                     break;
 
                 case 2:
-                    Buscar_Elemento_Mat(opcao, i, j, c);
-                    break;
+                        Buscar_Elemento_Mat(opcao, i, j, c);
+                        break;
 
                 default:
-                    Menu(index, a, b, c);
-                    break;
+                        Menu(index, a, b, c);
+                        break;
                 }
                 break;
 			}
@@ -456,11 +456,11 @@ int Menu (int index, vetor_solar a, vetor_solar b, vetor_solar c){
                 Menu(index, a, b, c);
                 break;
             }
-            break;
+                break;
 //		Case default para tentativas falsas.
 		default:
-			erros++;
-			break;
+            erros++;
+            break;
 		}
 		return erros;
 }

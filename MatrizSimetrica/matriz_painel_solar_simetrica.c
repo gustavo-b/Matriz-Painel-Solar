@@ -277,7 +277,7 @@ void Buscar_Elemento_Mat(int f, int i, int j, vetor_solar a) {
             if(a[k].ativo)
                 printf("\n\nATIVADO");
             else
-                printf("\n\DESATIVADO");
+                printf("\n\nDESATIVADO");
             break;
 
         case 1:
@@ -299,7 +299,7 @@ void Buscar_Elemento_Mat(int f, int i, int j, vetor_solar a) {
                 if(a[k].ativo)
                     printf("\n\nATIVADO");
                 else
-                    printf("\n\DESATIVADO");
+                    printf("\n\nDESATIVADO");
                 break;
 
             case 1:

@@ -8,11 +8,6 @@
 	Este programa realiza o controle de matrizes, 
 	utilizando como tema o gerenciamentos dos 
 	painéis solares de uma usina.
-	
-	Componentes da dupla:
-		Mat:			Nome:
-		201602493		Gustavo Henrique da Silva Batista
-		201609824		Saulo de Araújo Calixto
 
 	TAD: Dados int e float
 	1 - Ler Matrizes

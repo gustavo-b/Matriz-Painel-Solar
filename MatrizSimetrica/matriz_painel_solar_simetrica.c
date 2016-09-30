@@ -202,7 +202,7 @@ void Relatorio (vetor_solar a){
     float somaWatts = 0, somaEff = 0, eficienciatotal;
 
     for(i = 0; i < M; i++){
-		if(Map_Mat(i, i) != i){ //A Matriz simétrica tem seu valor duplicado somente quando estamos fora da diagonal.
+		if(Map_Mat(i + 1, i + 1) != i){ //A Matriz simétrica tem seu valor duplicado somente quando estamos fora da diagonal.
             somaWatts += (a[i].geracao * 2);
             somaEff += (a[i].eficiencia * 2);
 		}
@@ -212,7 +212,7 @@ void Relatorio (vetor_solar a){
 		}
 
 		if(a[i].ativo){
-            if(Map_Mat(i, i) != i) //A Matriz simétrica tem seu valor duplicado somente quando estamos fora da diagonal.
+            if(Map_Mat(i + 1, i + 1) != i) //A Matriz simétrica tem seu valor duplicado somente quando estamos fora da diagonal.
                 quant_ativos += 2;
             else quant_ativos++;
 		}

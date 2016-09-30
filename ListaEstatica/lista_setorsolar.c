@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <math.h>
 #define TAM 4 //Definição do tamanho das colunas e linhas das matrizes.
-#define M (((TAM * TAM) + TAM) / 2) //Definição do tamanho do vetor da matriz especial.
 #define MAX 10 //capacidade da lista
 #define AREA 100 //área de um painel
 #define EFIC_MAX 0.22 //eficiência máxima de um painel
@@ -21,7 +20,7 @@ int Tam_Vet_Esp(int qtde_paineis){
 
 typedef struct{
 	int identificacao_setor; // recebe o código do setor de até 4 dígitos.
-    Painel paineis[M]; //matriz simétrica de paineis pertencentes ao vetor
+    Painel paineis[TAM][TAM]; //matriz simétrica de paineis pertencentes ao vetor
     float geracao_setor; //quantidade de energia gerada pelo setor
 }Setor_Painel;
 
@@ -41,12 +40,6 @@ int Verifica_Lista_Vazia(Lista_est Setor_Aux){
 
 int Verifica_Lista_Cheia(Lista_est Setor_Aux){
 	return (Setor_Aux.Ult == MAX);
-}
-
-int Map_Mat(int i, int j){
-	int pos;
-	pos = (((i * i) - i) / 2) + j - 1;
-	return pos;
 }
 
 float Calc_Efic(float geracao){
@@ -113,35 +106,33 @@ void Remove_Elemento_Lista(Lista_est *Setor_Aux, Setor_Painel *setor){
 
 
 void Ler_Setor(Setor_Painel *A) {
-	int i, j, k = 0;
+	int i, j;
 	float soma_geracao = 0;
 
 	printf("\nEntre com o codigo identificador de 4 digitos do setor:");
 	scanf("%d", &A->identificacao_setor);
 
 	for(i = 0; i < TAM; i++){
-		for(j = 0; j <= i; j++){
+		for(j = 0; j < TAM; j++){
 			printf("\nEntre com o codigo identificador de 5 digitos do painel:");
-			scanf("%d", &A->paineis[k].identificacao_painel);
+			scanf("%d", &A->paineis[i][j].identificacao_painel);
 
-			printf("\nEntre se o painel %d esta ativo: \n0 - NAO\n1 - SIM\n", A->paineis[k].identificacao_painel);
-			scanf("%d", &A->paineis[k].ativo);
+			printf("\nEntre se o painel %d esta ativo: \n0 - NAO\n1 - SIM\n", A->paineis[i][j].identificacao_painel);
+			scanf("%d", &A->paineis[i][j].ativo);
 
-			if(A->paineis[k].ativo){
-				printf("\nEntre com quantos Watts o painel %d gerou: ", A->paineis[k].identificacao_painel);
-      			scanf("%f", &A->paineis[k].geracao);
+			if(A->paineis[i][j].ativo){
+				printf("\nEntre com quantos Watts o painel %d gerou: ", A->paineis[i][j].identificacao_painel);
+      			scanf("%f", &A->paineis[i][j].geracao);
 
-        		A->paineis[k].eficiencia = Calc_Efic(A->paineis[k].geracao);
-        		printf("\nA eficiencia do painel %d e: %.2f%%\n", A->paineis[k].identificacao_painel, A->paineis[k].eficiencia);
+        		A->paineis[i][j].eficiencia = Calc_Efic(A->paineis[i][j].geracao);
+        		printf("\nA eficiencia do painel %d e: %.2f%%\n", A->paineis[i][j].identificacao_painel, A->paineis[i][j].eficiencia);
 			}
 			else{
-				A->paineis[k].geracao = 0;
-				A->paineis[k].eficiencia = 0;
+				A->paineis[i][j].geracao = 0;
+				A->paineis[i][j].eficiencia = 0;
 			}
 
-			soma_geracao += A->paineis[k].geracao;
-
-        	k++;
+			soma_geracao += A->paineis[i][j].geracao;
 		}
 	}
 
@@ -158,101 +149,64 @@ void Exibir_Lista(Lista_est L) {
 		printf("\n");
 		
 		for(i = 0; i < TAM / 2; i++){
-			printf("*******************");
+			printf("********************");
 		}
 		
 		printf("Exibe Lista");
 		
 		for(i = 0; i < TAM / 2; i++){
-			printf("*******************");
+			printf("********************");
 		}
 		
 		printf("\n");
 
 		while(P < L.Ult){
 			printf("\t\t\t\t\tSetor %d\t\t\t\t\t\n\n", L.Item[P].identificacao_setor);
-			printf("\t\t\t\tGeracao total: %f\t\t\t\t\n\n", L.Item[P].geracao_setor);
+			printf("\t\t\t\tGeracao total: %.2f\t\t\t\t\n\n", L.Item[P].geracao_setor);
 
 			for(i = 0; i < TAM; i++){
         		for(j = 0; j < TAM; j++){
-					printf("Painel %d", L.Item[P].paineis[k].identificacao_painel);
+					printf("Painel %d", L.Item[P].paineis[i][j].identificacao_painel);
 					printf("\t\t");
         		}
+				printf("\n");
 
+        		for(j = 0; j < TAM; j++){
+					printf("Ativo: ");
+        		    if(L.Item[P].paineis[i][j].ativo) printf("SIM");
+					else printf("NAO");
+					printf("\t\t");
+				}
         		printf("\n");
 
         		for(j = 0; j < TAM; j++){
+            		printf("Ger.: %.2f W", L.Item[P].paineis[i][j].geracao );
+          			if(L.Item[P].paineis[i][j].geracao > 9999 || L.Item[P].paineis[i][j].geracao < -999) printf("\t");
+         		   	else printf("\t\t");
+				}
+			    printf("\n");
 
-        		    printf("Ativo: ");
-        		    if(i < j){
-            			k = Map_Mat(j + 1, i + 1);
-						if(L.Item[P].paineis[k].ativo)
-							printf("SIM");
-						else
-							printf("NAO");
-					}
-            		else{
-            			k = Map_Mat(i + 1, j + 1);
-						if(L.Item[P].paineis[k].ativo)
-							printf("SIM");
-						else
-							printf("NAO");
-						}
-        			    printf("\t\t");
-
-        			}
-
-        			printf("\n");
-
-        			for(j = 0; j < TAM; j++){
-
-		            	if(i < j){
-        		    		k = Map_Mat(j + 1, i + 1);
-            			    printf("Ger.: %.2f W", L.Item[P].paineis[k].geracao );
-          		  	    if(L.Item[P].paineis[k].geracao > 9999 || L.Item[P].paineis[k].geracao < -999) printf("\t");
-         		   		else printf("\t\t");
-            			}
-		            	else {
-		            		k = Map_Mat(i + 1, j + 1);
-    		        		printf("Ger.: %.2f W", L.Item[P].paineis[k].geracao );
-    		   	        	if(L.Item[P].paineis[k].geracao > 9999 || L.Item[P].paineis[k].geracao < -999) printf("\t");
-    		   		     	else printf("\t\t");
-						}
-
-    			    }
-			        printf("\n");
-
-					for(j = 0; j < TAM; j++){
-
-   				        if(i < j){
-   		        			k = Map_Mat(j + 1, i + 1);
-    			            printf("Efic.: %.2f%%", L.Item[P].paineis[k].eficiencia );
-    			            if(L.Item[P].paineis[k].eficiencia > 9999 || L.Item[P].paineis[k].eficiencia < -999) printf("\t");
-    			       		else printf("\t\t");
-    			        }
-    			        else {
-    			        	k = Map_Mat(i + 1, j + 1);
-    			        	printf("Efic.: %.2f%%", L.Item[P].paineis[k].eficiencia );
-    			            if(L.Item[P].paineis[k].eficiencia > 9999 || L.Item[P].paineis[k].eficiencia < -999) printf("\t");
-    	    		   		else printf("\t\t");
-						}
-
-    			    }
-			        printf("\n\n");
-			    }
+				for(j = 0; j < TAM; j++){
+    			    printf("Efic.: %.2f%%", L.Item[P].paineis[i][j].eficiencia );
+    			    if(L.Item[P].paineis[i][j].eficiencia > 9999 || L.Item[P].paineis[i][j].eficiencia < -999) printf("\t");
+    			    else printf("\t\t");
+    			}
+			    printf("\n\n");
+			}
+			
 			P++;
 		}
 		
 		printf("\n");
 		
 		for(i = 0; i < TAM / 2; i++){
-			printf("*******************");
+			printf("********************");
 		}
 		
 		printf("*Fim Lista*");
 		
 		for(i = 0; i < TAM / 2; i++){
-			printf("*******************");
+			printf("********************");
 		}
 		
 		printf("\n");

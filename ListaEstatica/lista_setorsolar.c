@@ -22,6 +22,7 @@ int Tam_Vet_Esp(int qtde_paineis){
 typedef struct{
 	int identificacao_setor; // recebe o código do setor de até 4 dígitos.
     Painel paineis[M]; //matriz simétrica de paineis pertencentes ao vetor
+    float geracao_setor; //quantidade de energia gerada pelo setor
 }Setor_Painel;
 
 typedef struct {
@@ -52,35 +53,99 @@ float Calc_Efic(float geracao){
 	return (((geracao / AREA) / EFIC_MAX) / 10);
 }
 
+void Insere_Elemento_Lista(Lista_est *Setor_Aux, Setor_Painel setor){
+
+	int p;
+
+	if(Verifica_Lista_Cheia(*Setor_Aux)){
+		printf("Lista lotada, não pode ser adicionado mais dados");
+	}
+	else {
+		p = Setor_Aux->Prim;
+
+		while ((p < Setor_Aux->Ult) && (setor.geracao_setor > Setor_Aux->Item[p].geracao_setor)) {
+			p++;
+		}
+		if (p == Setor_Aux->Ult){
+			Setor_Aux->Item[p] = setor;
+			Setor_Aux->Ult++;
+		}
+		else {
+			if (setor.geracao_setor != Setor_Aux->Item[p].geracao_setor){
+				int i;
+				for(i = Setor_Aux->Ult; i > p; i--){
+					Setor_Aux->Item[i] = Setor_Aux->Item[i-1];
+				}
+				Setor_Aux->Item[p] = setor;
+				Setor_Aux->Ult++;
+			}
+			else printf(" ELEMENTO JÁ EXISTE NA LISTA \n");
+		}
+	}
+}
+
+void Remove_Elemento_Lista(Lista_est *Setor_Aux, Setor_Painel *setor){
+
+	int p, i;
+
+	if(Verifica_Lista_Vazia(*Setor_Aux)){
+		printf("A lista já está vazia, impossível remover elemento.");
+	}
+	else {
+		p = Setor_Aux->Prim;
+
+		while ((p < Setor_Aux->Ult) && (setor->geracao_setor > Setor_Aux->Item[p].geracao_setor)) {
+			p++;
+		}
+		if (p == Setor_Aux->Ult || (setor->geracao_setor != Setor_Aux->Item[p].geracao_setor)){
+			printf("Elemento nao foi encontrado na Lista - Remove \n");
+		}
+		else {
+			*setor = Setor_Aux->Item[p];
+
+			for(i = p; i < Setor_Aux->Ult; i++) {
+				Setor_Aux->Item[i] = Setor_Aux->Item[i + 1];
+			}
+			Setor_Aux->Ult--;
+		}
+	}
+}
+
+
 void Ler_Setor(Setor_Painel *A) {
 	int i, j, k = 0;
-	
+	float soma_geracao = 0;
+
 	printf("\nEntre com o codigo identificador de 4 digitos do setor:");
 	scanf("%d", &A->identificacao_setor);
-	
+
 	for(i = 0; i < TAM; i++){
 		for(j = 0; j <= i; j++){
 			printf("\nEntre com o codigo identificador de 5 digitos do painel:");
 			scanf("%d", &A->paineis[k].identificacao_painel);
-			
-			printf("\nEntre se o painel [%d][%d] esta ativo: \n0 - NAO\n1 - SIM\n", i + 1, j + 1);
+
+			printf("\nEntre se o painel %d esta ativo: \n0 - NAO\n1 - SIM\n", A->paineis[k].identificacao_painel);
 			scanf("%d", &A->paineis[k].ativo);
-			
+
 			if(A->paineis[k].ativo){
-				printf("\nEntre com quantos Watts o painel [%d][%d] gerou: ", i + 1, j + 1);
+				printf("\nEntre com quantos Watts o painel %d gerou: ", A->paineis[k].identificacao_painel);
       			scanf("%f", &A->paineis[k].geracao);
-      			
+
         		A->paineis[k].eficiencia = Calc_Efic(A->paineis[k].geracao);
-        		printf("\nA eficiencia do painel [%d][%d] e: %.2f%%\n", i + 1, j + 1, A->paineis[k].eficiencia);
+        		printf("\nA eficiencia do painel %d e: %.2f%%\n", A->paineis[k].identificacao_painel, A->paineis[k].eficiencia);
 			}
 			else{
 				A->paineis[k].geracao = 0;
 				A->paineis[k].eficiencia = 0;
 			}
 
+			soma_geracao += A->paineis[k].geracao;
+
         	k++;
 		}
 	}
+
+	A->geracao_setor = soma_geracao;
 }
 
 void Exibir_Lista(Lista_est L) {
@@ -88,14 +153,26 @@ void Exibir_Lista(Lista_est L) {
 		printf("A lista esta vazia. -Exibe lista\n");
 	}
 	else{
-		int P = L.Prim;
-		printf("\n*********************Exibe Lista*************************\n");
+		int i, j, k = 0, P = L.Prim;
 		
+		printf("\n");
+		
+		for(i = 0; i < TAM / 2; i++){
+			printf("*******************");
+		}
+		
+		printf("Exibe Lista");
+		
+		for(i = 0; i < TAM / 2; i++){
+			printf("*******************");
+		}
+		
+		printf("\n");
+
 		while(P < L.Ult){
-			int i, j, k;
-			
 			printf("\t\t\t\t\tSetor %d\t\t\t\t\t\n\n", L.Item[P].identificacao_setor);
-			
+			printf("\t\t\t\tGeracao total: %f\t\t\t\t\n\n", L.Item[P].geracao_setor);
+
 			for(i = 0; i < TAM; i++){
         		for(j = 0; j < TAM; j++){
 					printf("Painel %d", L.Item[P].paineis[k].identificacao_painel);
@@ -166,22 +243,39 @@ void Exibir_Lista(Lista_est L) {
 			P++;
 		}
 		
-		printf("\n*******************Fim Lista***************************\n");
+		printf("\n");
+		
+		for(i = 0; i < TAM / 2; i++){
+			printf("*******************");
+		}
+		
+		printf("*Fim Lista*");
+		
+		for(i = 0; i < TAM / 2; i++){
+			printf("*******************");
+		}
+		
+		printf("\n");
 	}
 }
 
 int main(){
 	Setor_Painel x;
-	
+
 	Lista_est y;
-	
+
 	Criar_Lista_Vazia(&y);
-	
+
 	Ler_Setor(&x);
-	
-	Insere_Elemento_Lista;
-	
+
+	Insere_Elemento_Lista(&y, x);
+
 	Exibir_Lista(y);
+	
+	getchar();
+	getchar();
+	getchar();
+	getchar();
 	
 	return 0;
 }

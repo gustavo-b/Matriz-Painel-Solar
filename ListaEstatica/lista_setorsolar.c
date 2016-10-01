@@ -118,7 +118,7 @@ float Get_Random_Float(){
 }
 
 void Ler_Setor(Setor_Painel *A, Lista_est Setor_Aux) {
-	int i = 0, j, ativos = 0;
+	int i = 0, j;
 	float soma_geracao = 0;
 
 	printf("\nEntre com o codigo identificador de 4 digitos do setor: ");
@@ -153,7 +153,6 @@ void Ler_Setor(Setor_Painel *A, Lista_est Setor_Aux) {
 
         		A->paineis[i][j].eficiencia = Calc_Efic(A->paineis[i][j].geracao);
         		printf("\nA eficiencia do painel %d e: %.2f%%\n", A->paineis[i][j].identificacao_painel, A->paineis[i][j].eficiencia);
-        		ativos++;
 			}
 			else{
 				A->paineis[i][j].geracao = 0;
@@ -166,7 +165,7 @@ void Ler_Setor(Setor_Painel *A, Lista_est Setor_Aux) {
 		getchar();
 	}
 
-	soma_geracao = soma_geracao / ativos;
+	soma_geracao = soma_geracao / (TAM*TAM);
 
 	A->geracao_setor = Calc_Efic(soma_geracao);
 }
@@ -411,10 +410,9 @@ int main ( ) {
             printf("\nErro: Opcao inexistente. Tentativas restantes = %d\n\n", LIMITE - erros);
         }
 
-		getchar();
-		getchar();
 
-		printf("Tecle enter para continuar");
+		getchar();
+		getchar();
 
 		cls();
 	}

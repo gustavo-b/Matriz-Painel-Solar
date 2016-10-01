@@ -6,6 +6,7 @@
 #define MAX 10 //capacidade da lista
 #define AREA 100 //área de um painel
 #define EFIC_MAX 0.22 //eficiência máxima de um painel
+#define LIMITE 5 //Máximo de vezes que o usuário pode errar uma opção do Menu
 
 int cod_painel = 10000;
 
@@ -300,29 +301,120 @@ void Consultar_Elemento_Setor(Lista_est Setor_Aux, int codigo_setor){
 
 }
 
-int main(){
-    srand((unsigned int)time(NULL));
+void cls(void)
+{
+    printf("\e[H\e[2J");
 
-	Setor_Painel x;
+    #ifdef LINUX
+        //código especifico para linux
+        //system ("clear");//poderia ser este mas escolhi este outro pois é mais a cara do C
+        printf("\e[H\e[2J");
+        #elif defined WIN32
+        //código específico para windows
+        system ("cls");
+    #else
+        printf("\e[H\e[2J");
+    #endif
 
-	Lista_est y;
+}
 
-	Criar_Lista_Vazia(&y);
+int Menu (int index, Lista_est *Setor_Aux, Setor_Painel Setor){
 
-	Ler_Setor(&x, y);
+    int escolha, erros = 0, opcao, i, j;
 
-	Insere_Elemento_Lista(&y, x);
+    switch (index) {
 
-	Ler_Setor(&x, y);
+		case 0:
+		    printf("Obrigado por usar o APOLO MANAGER.");
+			return 0;
 
-	Insere_Elemento_Lista(&y, x);
+		case 1:
+            Ler_Setor(&Setor, *Setor_Aux);
+            Insere_Elemento_Lista(*(&Setor_Aux), Setor);
+            break;
 
-	Exibir_Lista(y);
+		case 2:
 
-	getchar();
-	getchar();
-	getchar();
-	getchar();
+			break;
+
+		case 3:
+
+		    Exibir_Lista(*Setor_Aux);
+
+			break;
+
+		case 4:
+
+		    break;
+
+		case 5:
+
+		    break;
+
+		case 6:
+
+			break;
+
+		case 7:
+
+			break;
+
+        case 8:
+
+            break;
+
+//		Case default para tentativas falsas.
+		default:
+
+            erros++;
+            break;
+		}
+
+		return erros;
+}
+
+int main ( ) {
+	int index = 1, erros = 0, aux;
+	Lista_est Setor_Aux;
+	Setor_Painel Setor;
+	srand((unsigned int)time(NULL));
+
+	Criar_Lista_Vazia(&Setor_Aux);
+
+    printf("************Bem vindo ao Apolo Manager************\n\n");
+
+	//Continua a execução até que se digite 0.
+	while (index != 0 && erros < LIMITE){
+		//Fornece as opções do TAD.
+		printf("=============MENU Apolo Manager=============\n\n");
+		printf("Escolha alguma das opcoes abaixo:\n\n");
+		printf("0 - Sair do programa.\n"); //implementado :]
+		printf("1 - Inserir Setor na Lista\n"); //implementado
+		printf("2 - Remover Setor da Lista\n"); // implementado
+		printf("3 - Exibir Lista\n"); //implementado
+		printf("4 - Consultar Setor na Lista\n"); //implementado
+		printf("5 - Consultar Painel no Setor\n"); //implementado
+		printf("6 - Consultar Setores mais Próximos\n"); //implementado
+		printf("7 - Buscar elementos em uma matriz\n"); //implementado
+		printf("8 - Relatorio Geral\n\n"); //implementado
+		printf("=============================================\n");
+
+		scanf("%d", &index);
+
+        aux = Menu(index, &Setor_Aux, Setor);
+
+        if(aux){
+            erros += aux;
+            printf("\nErro: Opcao inexistente. Tentativas restantes = %d\n\n", LIMITE - erros);
+        }
+
+		getchar();
+		getchar();
+
+		printf("Tecle enter para continuar");
+
+		cls();
+	}
 
 	return 0;
 }

@@ -118,7 +118,7 @@ float Get_Random_Float(){
 }
 
 void Ler_Setor(Setor_Painel *A, Lista_est Setor_Aux) {
-	int i = 0, j;
+	int i = 0, j, ativos = 0;
 	float soma_geracao = 0;
 
 	printf("\nEntre com o codigo identificador de 4 digitos do setor: ");
@@ -153,6 +153,7 @@ void Ler_Setor(Setor_Painel *A, Lista_est Setor_Aux) {
 
         		A->paineis[i][j].eficiencia = Calc_Efic(A->paineis[i][j].geracao);
         		printf("\nA eficiencia do painel %d e: %.2f%%\n", A->paineis[i][j].identificacao_painel, A->paineis[i][j].eficiencia);
+        		ativos++;
 			}
 			else{
 				A->paineis[i][j].geracao = 0;
@@ -165,7 +166,9 @@ void Ler_Setor(Setor_Painel *A, Lista_est Setor_Aux) {
 		getchar();
 	}
 
-	A->geracao_setor = soma_geracao;
+	soma_geracao = soma_geracao / ativos;
+
+	A->geracao_setor = Calc_Efic(soma_geracao);
 }
 
 void Exibir_Lista(Lista_est L) {
@@ -191,7 +194,7 @@ void Exibir_Lista(Lista_est L) {
 
 		while(P < L.Ult){
 			printf("\t\t\t\t\tSetor %d\t\t\t\t\t\n\n", L.Item[P].identificacao_setor);
-			printf("\t\t\t\tGeracao total: %.2f\t\t\t\t\n\n", L.Item[P].geracao_setor);
+			printf("\t\t\t\tEficiencia Media: %.2f%%\t\t\t\t\n\n", L.Item[P].geracao_setor);
 
 			for(i = 0; i < TAM; i++){
         		for(j = 0; j < TAM; j++){

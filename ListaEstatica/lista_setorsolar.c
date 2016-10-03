@@ -9,10 +9,10 @@
 #define LIMITE 5 //Máximo de vezes que o usuário pode errar uma opção do Menu
 
 /*
-	Este programa realiza o controle de dados 
+	Este programa realiza o controle de dados
 	heterogêneos, utilizando como tema o gerenciamentos
 	dos painéis solares de uma companhia de energia solar,
-	dispostas em setores, utilizando-se de matrizes 
+	dispostas em setores, utilizando-se de matrizes
 	para sua representação.
 
 	TAD: Dados heterogêneos
@@ -47,7 +47,7 @@ int Tam_Vet_Esp(int qtde_paineis){
 typedef struct{
 	int identificacao_setor; // recebe o código do setor de até 4 dígitos.
     Painel paineis[TAM][TAM]; //matriz simétrica de paineis pertencentes ao vetor
-    float geracao_setor; //quantidade de energia gerada pelo setor
+    float eficiencia_setor; //quantidade de energia gerada pelo setor
 }Setor_Painel;
 
 typedef struct {
@@ -85,7 +85,7 @@ void Insere_Elemento_Lista(Lista_est *Setor_Aux, Setor_Painel setor){
 		else {
 			p = Setor_Aux->Prim;
 
-			while ((p < Setor_Aux->Ult) && (setor.geracao_setor < Setor_Aux->Item[p].geracao_setor)) {
+			while ((p < Setor_Aux->Ult) && (setor.eficiencia_setor < Setor_Aux->Item[p].eficiencia_setor)) {
 				p++;
 			}
 			if (p == Setor_Aux->Ult){
@@ -93,7 +93,7 @@ void Insere_Elemento_Lista(Lista_est *Setor_Aux, Setor_Painel setor){
 				Setor_Aux->Ult++;
 			}
 			else {
-				if ((setor.geracao_setor != Setor_Aux->Item[p].geracao_setor)){
+				if ((setor.eficiencia_setor != Setor_Aux->Item[p].eficiencia_setor)){
 					int i;
 					for(i = Setor_Aux->Ult; i > p; i--){
 						Setor_Aux->Item[i] = Setor_Aux->Item[i-1];
@@ -115,15 +115,15 @@ void Remove_Elemento_Lista(Lista_est *Setor_Aux, Setor_Painel *setor){
 	else {
 		p = Setor_Aux->Prim;
 
-		while ((p < Setor_Aux->Ult) && (setor->geracao_setor > Setor_Aux->Item[p].geracao_setor)) {
+		while ((p < Setor_Aux->Ult) && (setor->identificacao_setor > Setor_Aux->Item[p].identificacao_setor)) {
 			p++;
 		}
-		if (p == Setor_Aux->Ult || (setor->geracao_setor != Setor_Aux->Item[p].geracao_setor)){
-			printf("Elemento nao foi encontrado na Lista - Remove\n");
+		if (p == Setor_Aux->Ult || (setor->identificacao_setor != Setor_Aux->Item[p].identificacao_setor)){
+			printf("Setor nao foi encontrado no sistema!\n");
 		}
 		else {
 			*setor = Setor_Aux->Item[p];
-
+            printf("Setor removido do sistema!\n");
 			for(i = p; i < Setor_Aux->Ult; i++) {
 				Setor_Aux->Item[i] = Setor_Aux->Item[i + 1];
 			}
@@ -188,7 +188,7 @@ void Ler_Setor(Setor_Painel *A, Lista_est Setor_Aux) {
 
 	soma_geracao = soma_geracao / (TAM*TAM);
 
-	A->geracao_setor = Calc_Efic(soma_geracao);
+	A->eficiencia_setor = Calc_Efic(soma_geracao);
 }
 
 void Exibir_Lista(Lista_est L) {
@@ -214,7 +214,7 @@ void Exibir_Lista(Lista_est L) {
 
 		while(P < L.Ult){
 			printf("\t\t\t\t\tSetor %d\t\t\t\t\t\n\n", L.Item[P].identificacao_setor);
-			printf("\t\t\t\tEficiencia Media: %.2f%%\t\t\t\t\n\n", L.Item[P].geracao_setor);
+			printf("\t\t\t\tEficiencia Media: %.2f%%\t\t\t\t\n\n", L.Item[P].eficiencia_setor);
 
 			for(i = 0; i < TAM; i++){
         		for(j = 0; j < TAM; j++){
@@ -269,7 +269,7 @@ void Exibir_Setor(Lista_est L, int P){
     int i, j;
 
     printf("\t\t\t\t\tSetor %d\t\t\t\t\t\n\n", L.Item[P].identificacao_setor);
-    printf("\t\t\t\tGeracao total: %.2f\t\t\t\t\n\n", L.Item[P].geracao_setor);
+    printf("\t\t\t\tEficiencia Media: %.2f%%\t\t\t\t\n\n", L.Item[P].eficiencia_setor);
 
     for(i = 0; i < TAM; i++){
         for(j = 0; j < TAM; j++){
@@ -357,6 +357,11 @@ int Menu (int index, Lista_est *Setor_Aux, Setor_Painel Setor){
             break;
 
 		case 2:
+		    printf("Digite a identificacao do setor a ser removido: ");
+		    scanf("%d", &opcao);
+		    Setor.identificacao_setor = opcao;
+		    Remove_Elemento_Lista(*(&Setor_Aux), (&Setor));
+
 			break;
 
 		case 3:
@@ -366,6 +371,9 @@ int Menu (int index, Lista_est *Setor_Aux, Setor_Painel Setor){
 			break;
 
 		case 4:
+		    printf("Digite a identificacao do setor a ser consultado: ");
+		    scanf("%d", &opcao);
+		    Consultar_Elemento_Setor(*Setor_Aux, opcao);
 
 		    break;
 
@@ -410,13 +418,13 @@ int main ( ) {
 		//Fornece as opções do TAD.
 		printf("=============MENU Apolo Manager=============\n\n");
 		printf("Escolha alguma das opcoes abaixo:\n\n");
-		printf("0 - Sair do programa.\n"); //implementado :]
-		printf("1 - Inserir Setor na Lista\n"); //implementado
-		printf("2 - Remover Setor da Lista\n"); //
+		printf("0 - Sair do Sistema.\n"); //implementado :]
+		printf("1 - Inserir Setor no Sistema\n"); //implementado
+		printf("2 - Remover Setor do Sistema\n"); //implementado
 		printf("3 - Exibir Lista\n"); //implementado
-		printf("4 - Consultar Setor na Lista\n"); //
+		printf("4 - Consultar Setor no Sistema\n"); //
 		printf("5 - Consultar Painel no Setor\n"); //
-		printf("6 - Consultar Setores mais Próximos\n"); //
+		printf("6 - Consultar Setores mais Proximos\n"); //
 		printf("7 - Buscar elementos em uma matriz\n"); //
 		printf("8 - Relatorio Geral\n\n"); //
 		printf("=============================================\n");

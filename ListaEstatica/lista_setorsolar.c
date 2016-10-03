@@ -8,6 +8,27 @@
 #define EFIC_MAX 0.22 //eficiência máxima de um painel
 #define LIMITE 5 //Máximo de vezes que o usuário pode errar uma opção do Menu
 
+/*
+	Este programa realiza o controle de dados 
+	heterogêneos, utilizando como tema o gerenciamentos
+	dos painéis solares de uma companhia de energia solar,
+	dispostas em setores, utilizando-se de matrizes 
+	para sua representação.
+
+	TAD: Dados heterogêneos
+
+	1 - Criar lista vazia
+	2 - Inserir setor na lista
+	3 - Remover setor da lista
+	4 - Consultar setor da lista
+	5 - Exibe a lista
+	6 - Exibir os blocos com baixa eficiencia
+	7 - Redistribuir de acordo com a eficiencia de cada setor
+	8 - Gerar um relatório do setor
+	9 - Gerar um relatório da lista
+
+*/
+
 int cod_painel = 10000;
 
 typedef struct{
@@ -130,7 +151,7 @@ void Ler_Setor(Setor_Painel *A, Lista_est Setor_Aux) {
     if(i < Setor_Aux.Ult) {
         printf("Codigo de identifcacao ja existe na Lista.");
 
-        Ler_Setor(&(*A), Setor_Aux);
+        return Ler_Setor(&(*A), Setor_Aux);
     }
 
 	for(i = 0; i < TAM; i++){
@@ -336,7 +357,6 @@ int Menu (int index, Lista_est *Setor_Aux, Setor_Painel Setor){
             break;
 
 		case 2:
-
 			break;
 
 		case 3:
@@ -392,13 +412,13 @@ int main ( ) {
 		printf("Escolha alguma das opcoes abaixo:\n\n");
 		printf("0 - Sair do programa.\n"); //implementado :]
 		printf("1 - Inserir Setor na Lista\n"); //implementado
-		printf("2 - Remover Setor da Lista\n"); // implementado
+		printf("2 - Remover Setor da Lista\n"); //
 		printf("3 - Exibir Lista\n"); //implementado
-		printf("4 - Consultar Setor na Lista\n"); //implementado
-		printf("5 - Consultar Painel no Setor\n"); //implementado
-		printf("6 - Consultar Setores mais Próximos\n"); //implementado
-		printf("7 - Buscar elementos em uma matriz\n"); //implementado
-		printf("8 - Relatorio Geral\n\n"); //implementado
+		printf("4 - Consultar Setor na Lista\n"); //
+		printf("5 - Consultar Painel no Setor\n"); //
+		printf("6 - Consultar Setores mais Próximos\n"); //
+		printf("7 - Buscar elementos em uma matriz\n"); //
+		printf("8 - Relatorio Geral\n\n"); //
 		printf("=============================================\n");
 
 		scanf("%d", &index);

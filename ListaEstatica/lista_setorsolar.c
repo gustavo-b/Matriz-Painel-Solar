@@ -9,6 +9,11 @@
 #define LIMITE 5 //Máximo de vezes que o usuário pode errar uma opção do Menu
 
 /*
+	Componentes:
+    Mat:			Nome:
+    201602493		Gustavo Henrique da Silva Batista
+    201609824		Saulo de Araújo Calixto
+
 	Este programa realiza o controle de dados
 	heterogêneos, utilizando como tema o gerenciamentos
 	dos painéis solares de uma companhia de energia solar,
@@ -23,7 +28,6 @@
 	6 - Exibir os setores com baixa eficiencia
 	7 - Redistribuir de acordo com a eficiencia de cada setor
 	8 - Gerar um relatório do setor
-	9 - Gerar um relatório da lista
 */
 
 int cod_painel = 10000;
@@ -112,7 +116,7 @@ void Remove_Elemento_Lista(Lista_est *Lista_Usina, Setor_Painel *setor){
 	else {
 		p = Lista_Usina->Prim;
 
-		while ((p < Lista_Usina->Ult) && (setor->identificacao_setor > Lista_Usina->Item[p].identificacao_setor)) {
+		while ((p < Lista_Usina->Ult) && (setor->identificacao_setor != Lista_Usina->Item[p].identificacao_setor)) {
 			p++;
 		}
 		if (p == Lista_Usina->Ult){
@@ -312,7 +316,7 @@ void Exibir_Setor(Lista_est Lista_Usina, int P){
         }
         printf("\n\n");
     }
-    
+
     getchar();
 	getchar();
 
@@ -403,7 +407,7 @@ void Exibir_Painel(Lista_est Lista_Usina, int j, int k, int i){
     if(Lista_Usina.Item[i].paineis[j][k].eficiencia > 9999 || Lista_Usina.Item[i].paineis[j][k].eficiencia < -999) printf("\t");
     else printf("\t\t");
     printf("\n\n");
-    
+
     getchar();
 	getchar();
 }
@@ -417,7 +421,8 @@ void Consultar_Elemento_Painel(Lista_est Lista_Usina, int identificacao_painel){
     else {
         i = Lista_Usina.Prim;
 
-        while ((i < Lista_Usina.Ult) && (identificacao_painel >= (Lista_Usina.Item[i].paineis[0][0].identificacao_painel + 16) ))
+        while ((i < Lista_Usina.Ult) && (identificacao_painel > Lista_Usina.Item[i].paineis[0][0].identificacao_painel + 16 ||
+                                         identificacao_painel < Lista_Usina.Item[i].paineis[0][0].identificacao_painel))
             i++;
         if(i < Lista_Usina.Ult) {
             for(j = 0; j < TAM; j++){

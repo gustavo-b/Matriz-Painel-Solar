@@ -340,6 +340,50 @@ void Consultar_Elemento_Setor(Lista_est Lista_Usina, int codigo_setor){
 
 }
 
+void Consultar_Antecessor_Setor(Lista_est Lista_Usina, int codigo_setor){
+    int i;
+
+    if(Verifica_Lista_Vazia(Lista_Usina)) {
+        printf("A lista está vazia.");
+    }
+    else {
+        i = Lista_Usina.Prim;
+
+        while ((i < Lista_Usina.Ult) && (codigo_setor != Lista_Usina.Item[i].identificacao_setor))
+            i++;
+        if(i < Lista_Usina.Ult && i > Lista_Usina.Prim) {
+
+            Consultar_Elemento_Setor(Lista_Usina, Lista_Usina.Item[i - 1].identificacao_setor);
+
+        }
+        else printf("Setor nao encontrado.");
+
+    }
+
+}
+
+void Consultar_Subsequente_Setor(Lista_est Lista_Usina, int codigo_setor){
+    int i;
+
+    if(Verifica_Lista_Vazia(Lista_Usina)) {
+        printf("A lista está vazia.");
+    }
+    else {
+        i = Lista_Usina.Prim;
+
+        while ((i < Lista_Usina.Ult) && (codigo_setor != Lista_Usina.Item[i].identificacao_setor))
+            i++;
+        if(i < Lista_Usina.Ult - 1) {
+
+            Consultar_Elemento_Setor(Lista_Usina, Lista_Usina.Item[i + 1].identificacao_setor);
+
+        }
+        else printf("Setor nao encontrado.");
+
+    }
+
+}
+
 void Exibir_Painel(Lista_est Lista_Usina, int j, int k, int i){
     printf("\nPainel %d", Lista_Usina.Item[i].paineis[j][k].identificacao_painel);
     printf("\t\t");
@@ -544,7 +588,6 @@ int Menu (int index, Lista_est *Lista_Usina, Setor_Painel *Setor){
 		    printf("Digite a identificacao do setor a ser consultado: ");
 		    scanf("%d", &opcao);
 		    Consultar_Elemento_Setor(*Lista_Usina, opcao);
-
 		    break;
 
 		case 5:
@@ -554,7 +597,18 @@ int Menu (int index, Lista_est *Lista_Usina, Setor_Painel *Setor){
 		    break;
 
 		case 6:
-
+			printf("0 - Antecessor\n");
+			printf("1 - Subsequente\n");
+			scanf("%d", &opcao);
+			printf("\nDigite a identificacao do setor original: ");
+			int temp_setor;
+		    scanf("%d", &temp_setor);
+		    if(opcao){
+		    	Consultar_Subsequente_Setor(*Lista_Usina, temp_setor);
+			}
+			else{
+				Consultar_Antecessor_Setor(*Lista_Usina, temp_setor);
+			}
 			break;
 
 		case 7:
@@ -602,7 +656,7 @@ int main ( ) {
 		printf("3 - Exibir Lista\n"); //implementado
 		printf("4 - Consultar Setor no Sistema\n"); //implementado
 		printf("5 - Consultar Painel no Setor\n"); //implementado
-		printf("6 - Consultar Setores mais Proximos\n"); //ou realocar energia para setores?
+		printf("6 - Consultar Setores mais Proximos\n"); //implementado
 		printf("7 - Setores abaixo da eficiencia media\n"); //implementado
 		printf("8 - Relatorio de um Setor\n"); //implementado
 		printf("=============================================\n");

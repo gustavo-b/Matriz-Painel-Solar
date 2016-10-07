@@ -257,6 +257,8 @@ void Exibir_Lista(Lista_est Lista_Usina) {
 			}
 
 			P++;
+			getchar();
+			getchar();
 		}
 
 		printf("\n");
@@ -310,6 +312,9 @@ void Exibir_Setor(Lista_est Lista_Usina, int P){
         }
         printf("\n\n");
     }
+    
+    getchar();
+	getchar();
 
 }
 
@@ -335,8 +340,7 @@ void Consultar_Elemento_Setor(Lista_est Lista_Usina, int codigo_setor){
 
 }
 
-void Exibir_Painel(Lista_est Lista_Usina, int j, int k, int i)
-{
+void Exibir_Painel(Lista_est Lista_Usina, int j, int k, int i){
     printf("\nPainel %d", Lista_Usina.Item[i].paineis[j][k].identificacao_painel);
     printf("\t\t");
     printf("\n");
@@ -355,6 +359,9 @@ void Exibir_Painel(Lista_est Lista_Usina, int j, int k, int i)
     if(Lista_Usina.Item[i].paineis[j][k].eficiencia > 9999 || Lista_Usina.Item[i].paineis[j][k].eficiencia < -999) printf("\t");
     else printf("\t\t");
     printf("\n\n");
+    
+    getchar();
+	getchar();
 }
 
 void Consultar_Elemento_Painel(Lista_est Lista_Usina, int identificacao_painel){
@@ -417,7 +424,7 @@ void Efic_Setores(Lista_est Lista_Usina){
 	}
 }
 
-void Relatorio_Setor(Lista_est Lista_Usina, Setor_Painel setor){
+void Relatorio_Setor(Lista_est Lista_Usina, int codigo_setor){
 	int p;
 
 	if(Verifica_Lista_Vazia(Lista_Usina)){
@@ -426,7 +433,7 @@ void Relatorio_Setor(Lista_est Lista_Usina, Setor_Painel setor){
 	else {
 		p = Lista_Usina.Prim;
 
-		while ((p < Lista_Usina.Ult) && (setor.identificacao_setor > Lista_Usina.Item[p].identificacao_setor)) {
+		while ((p < Lista_Usina.Ult) && (codigo_setor != Lista_Usina.Item[p].identificacao_setor)) {
 			p++;
 		}
 		if (p == Lista_Usina.Ult){
@@ -438,8 +445,8 @@ void Relatorio_Setor(Lista_est Lista_Usina, Setor_Painel setor){
 
 		    for(i = 0; i < TAM; i++){
     			for(j = 0; j < TAM; j++){
-    				somaWatts += setor.paineis[i][j].geracao;
-        		    if(setor.paineis[i][j].ativo){
+    				somaWatts += Lista_Usina.Item[p].paineis[i][j].geracao;
+        		    if(Lista_Usina.Item[p].paineis[i][j].ativo){
         		    	quant_ativos++;
 					}
 				}
@@ -461,21 +468,21 @@ void Relatorio_Setor(Lista_est Lista_Usina, Setor_Painel setor){
 			else{
 				printf("*  Media Energ. Ger.: %.2f\t\t*\n", somaWatts / (TAM*TAM)); //a média é em relação todos os paineis, até os desativados
 			}
-		    printf("*  Media Eficiencia: %.2f%%\t\t*\n", setor.eficiencia_setor);
-		    if((setor.eficiencia_setor * EFIC_MAX) >= 16){
+		    printf("*  Media Eficiencia: %.2f%%\t\t*\n", Lista_Usina.Item[p].eficiencia_setor);
+		    if((Lista_Usina.Item[p].eficiencia_setor * EFIC_MAX) >= 16){
 		    	printf("*  EFICIENCIA ALTA\t\t\t*\n");
 			}
 			else{
-				if((setor.eficiencia_setor * EFIC_MAX) >= 15){
+				if((Lista_Usina.Item[p].eficiencia_setor * EFIC_MAX) >= 15){
 					printf("*  ACIMA DA MEDIA DE EFICIENCIA\t\t*\n");
 				}
 				else{
-					if((setor.eficiencia_setor * EFIC_MAX) >= 14){
+					if((Lista_Usina.Item[p].eficiencia_setor * EFIC_MAX) >= 14){
 						printf("*  EFICIENCIA MEDIA\t\t\t*\n");
 					}
 					else{
-						if((setor.eficiencia_setor * EFIC_MAX) >= 13){
-							printf("*  ABAIXO DA MEDIA DE EFICIENCIA\t\t*\n");
+						if((Lista_Usina.Item[p].eficiencia_setor * EFIC_MAX) >= 13){
+							printf("*  ABAIXO DA MEDIA DE EFICIENCIA\t*\n");
 						}
 						else{
 							printf("*  EFICIENCIA BAIXA\t\t\t*\n");
@@ -557,7 +564,7 @@ int Menu (int index, Lista_est *Lista_Usina, Setor_Painel *Setor){
         case 8:
         	printf("Digite a identificacao do setor a ser gerado relatorio: ");
 		    scanf("%d", &opcao);
-        	Relatorio_Setor(*Lista_Usina, *Setor);
+        	Relatorio_Setor(*Lista_Usina, opcao);
         	break;
 
         case 9:

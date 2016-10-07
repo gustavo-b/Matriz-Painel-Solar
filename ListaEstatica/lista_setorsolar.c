@@ -14,9 +14,7 @@
 	dos painéis solares de uma companhia de energia solar,
 	dispostas em setores, utilizando-se de matrizes
 	para sua representação.
-
 	TAD: Dados heterogêneos
-
 	1 - Criar lista vazia
 	2 - Inserir setor na lista
 	3 - Remover setor da lista
@@ -26,7 +24,6 @@
 	7 - Redistribuir de acordo com a eficiencia de cada setor
 	8 - Gerar um relatório do setor
 	9 - Gerar um relatório da lista
-
 */
 
 int cod_painel = 10000;
@@ -332,20 +329,69 @@ void Consultar_Elemento_Setor(Lista_est Lista_Usina, int codigo_setor){
             Exibir_Setor(Lista_Usina, i);
 
         }
+        else printf("Setor nao encontrado.");
 
     }
 
 }
 
+void Exibir_Painel(Lista_est Lista_Usina, int j, int k, int i)
+{
+    printf("\nPainel %d", Lista_Usina.Item[i].paineis[j][k].identificacao_painel);
+    printf("\t\t");
+    printf("\n");
+    printf("Setor de origem: %d", Lista_Usina.Item[i].identificacao_setor);
+    printf("\n");
+    printf("Ativo: ");
+    if(Lista_Usina.Item[i].paineis[j][k].ativo) printf("SIM");
+    else printf("NAO");
+    printf("\t\t");
+    printf("\n");
+    printf("Ger.: %.2f W", Lista_Usina.Item[i].paineis[j][k].geracao );
+    if(Lista_Usina.Item[i].paineis[j][k].geracao > 9999 || Lista_Usina.Item[i].paineis[j][k].geracao < -999) printf("\t");
+    else printf("\t\t");
+    printf("\n");
+    printf("Efic.: %.2f%%", Lista_Usina.Item[i].paineis[j][k].eficiencia );
+    if(Lista_Usina.Item[i].paineis[j][k].eficiencia > 9999 || Lista_Usina.Item[i].paineis[j][k].eficiencia < -999) printf("\t");
+    else printf("\t\t");
+    printf("\n\n");
+}
+
+void Consultar_Elemento_Painel(Lista_est Lista_Usina, int identificacao_painel){
+    int i, j, k;
+
+    if(Verifica_Lista_Vazia(Lista_Usina)) {
+        printf("A lista está vazia.");
+    }
+    else {
+        i = Lista_Usina.Prim;
+
+        while ((i < Lista_Usina.Ult) && (identificacao_painel >= (Lista_Usina.Item[i].paineis[0][0].identificacao_painel + 16) ))
+            i++;
+        if(i < Lista_Usina.Ult) {
+            for(j = 0; j < TAM; j++){
+                for(k = 0; k < TAM; k++){
+                    if(Lista_Usina.Item[i].paineis[j][k].identificacao_painel == identificacao_painel) {
+                        Exibir_Painel(Lista_Usina, j, k, i);
+                    }
+                }
+            }
+
+        }
+        else printf("Painel nao encontrado.");
+
+    }
+}
+
 void Efic_Setores(Lista_est Lista_Usina){
 	int low_effic = 0;
-	
+
 	if(Verifica_Lista_Vazia(Lista_Usina)) {
         printf("A lista está vazia.");
     }
-    
+
     int cont = Lista_Usina.Prim;
-    
+
     while(cont < Lista_Usina.Ult){
    		if((Lista_Usina.Item[cont].eficiencia_setor * EFIC_MAX) >= 13){
    			low_effic++;
@@ -365,7 +411,7 @@ void Efic_Setores(Lista_est Lista_Usina){
 		}
 		cont++;
 	}
-	
+
 	if(low_effic == 0){
 		printf("Parabens! Nenhum setor abaixo da producao media esperada!\n");
 	}
@@ -373,7 +419,7 @@ void Efic_Setores(Lista_est Lista_Usina){
 
 void Relatorio_Setor(Lista_est Lista_Usina, Setor_Painel setor){
 	int p;
-	
+
 	if(Verifica_Lista_Vazia(Lista_Usina)){
 		printf("A lista esta vazia.");
 	}
@@ -398,7 +444,7 @@ void Relatorio_Setor(Lista_est Lista_Usina, Setor_Painel setor){
 					}
 				}
 		    }
-		
+
 		    printf("\n************RELATORIO GERAL**************\n");
 		    printf("*  \t\t\t\t\t*\n*\t\t\t\t\t*\n");
 		    printf("*  Paineis Ativados: %d\t\t\t*\n", quant_ativos);
@@ -495,7 +541,9 @@ int Menu (int index, Lista_est *Lista_Usina, Setor_Painel *Setor){
 		    break;
 
 		case 5:
-
+		    printf("Digite a identificacao do painel a ser consultado: ");
+		    scanf("%d", &opcao);
+		    Consultar_Elemento_Painel(*Lista_Usina, opcao);
 		    break;
 
 		case 6:
@@ -505,15 +553,15 @@ int Menu (int index, Lista_est *Lista_Usina, Setor_Painel *Setor){
 		case 7:
 			Efic_Setores(*Lista_Usina);
             break;
-            
+
         case 8:
         	printf("Digite a identificacao do setor a ser gerado relatorio: ");
 		    scanf("%d", &opcao);
         	Relatorio_Setor(*Lista_Usina, *Setor);
         	break;
-        	
+
         case 9:
-        	
+
         	break;
 
 //		Case default para tentativas falsas.
@@ -546,11 +594,10 @@ int main ( ) {
 		printf("2 - Remover Setor do Sistema\n"); //implementado
 		printf("3 - Exibir Lista\n"); //implementado
 		printf("4 - Consultar Setor no Sistema\n"); //implementado
-		printf("5 - Consultar Painel no Setor\n"); //
+		printf("5 - Consultar Painel no Setor\n"); //implementado
 		printf("6 - Consultar Setores mais Proximos\n"); //ou realocar energia para setores?
 		printf("7 - Setores abaixo da eficiencia media\n"); //implementado
 		printf("8 - Relatorio de um Setor\n"); //implementado
-		printf("9 - Relatorio Geral\n\n"); //
 		printf("=============================================\n");
 
 		scanf("%d", &index);

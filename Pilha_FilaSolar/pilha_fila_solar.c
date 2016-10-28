@@ -207,7 +207,6 @@ void Ler_Setor(Setor_Painel *setor) {
 }
 
 void cls(void){
-    printf("\e[H\e[2J");
 
     #ifdef LINUX
         //código especifico para linux

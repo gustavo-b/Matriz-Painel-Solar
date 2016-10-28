@@ -19,14 +19,15 @@
 *	dispostas em setores, utilizando-se de matrizes
 *	para sua representa√ß√£o.
 *	TAD: Dados heterog√™neos
-*	1 - Criar lista vazia
-*	2 - Inserir setor na lista
-*	3 - Remover setor da lista
-*	4 - Consultar setor da lista
-*	5 - Exibe a lista
-*	6 - Exibir os setores com baixa eficiencia
-*	7 - Redistribuir de acordo com a eficiencia de cada setor
-*	8 - Gerar um relat√≥rio do setor
+*	1 - Criar fila vazia
+*	2 - Criar pilha vazia
+*	3 - Inserir setor na fila
+*	4 - Inserir setor na pilha
+*	5 - Remover setor da fila
+*	6 - Remover setor da pilha
+*	7 - Consultar setor da fila
+*	8 - Consultar setor da pilha
+*	9 - Gerar um relat√≥rio do setor
 **/
 
 int cod_painel = 10000;
@@ -38,7 +39,7 @@ typedef struct{
 	float eficiencia; //recebe ((gera√ß√£o/AREA)/EFIC_MAX)/10
 }Painel;
 
-//Define o tamanho do vetor esepcial da matriz sim√©trica de acordo com
+//Define o tamanho do vetor especial da matriz sim√©trica de acordo com
 //a quantidade de elementos existentes nela.
 int Tam_Vet_Esp(int qtde_paineis){
 	return ((qtde_paineis + (sqrt(qtde_paineis)) ) / 2);
@@ -90,65 +91,6 @@ int Verifica_Fila_Cheia(Fila_est F)
 int Verifica_Pilha_Cheia(Pilha_est P)
 {
     return(P.Topo == MAX);
-}
-
-void Enfileirar(Fila_est* F, Setor_Painel setor)
-{
-    if(Verifica_Fila_Cheia(*F)) {
-        printf("N√£o podem ser inseridos mais setores, fila cheia.");
-    }
-    else {
-        F->Item[F->Fim] = setor;
-        F->Fim = (F->Fim + 1) % MAX;
-        F->Total++;
-    }
-}
-
-void Empilhar(Pilha_est* P, Setor_Painel setor)
-{
-    if(Verifica_Pilha_Cheia(*P)) {
-        printf("N√£o podem ser inseridos mais setores, pilha cheia.");
-    }
-    else {
-        P->Item[P->Topo] = setor;
-        P->Topo++;
-    }
-}
-
-void Desenfileirar(Fila_est *F, Setor_Painel *setor)
-{
-    if(Verifica_Fila_Vazia(*F)) {
-        printf("Nao h√° setores na fila.");
-    }
-    else {
-        *setor = F->Item[F->Inicio];
-        F->Inicio = (F->Inicio + 1) % MAX;
-        F->Total--;
-    }
-}
-
-void Desempilhar(Pilha_est *P, Setor_Painel *setor)
-{
-    if(Verifica_Pilha_Vazia(*P)) {
-        printf("Nao h√° setores na pilha.");
-    }
-    else {
-        P->Topo--;
-        *setor = P->Item[P->Topo];
-    }
-}
-
-int Get_Random_Int(int min, int max){
-    int r;
-    const unsigned int range = 1 + max - min;
-    const unsigned int buckets = RAND_MAX / range;
-    const unsigned int limit = buckets * range;
-
-    do{
-        r = rand();
-    } while (r >= limit);
-
-    return min + (r / buckets);
 }
 
 float Get_Random_Float(){
@@ -246,6 +188,165 @@ void Exibir_Setor(Setor_Painel setor){
 
 }
 
+void Relatorio_Setor(Setor_Painel setor){
+	int i, j, quant_ativos = 0;
+	float somaWatts = 0, somaEff = 0, eficienciatotal;
+
+	for(i = 0; i < TAM; i++){
+   		for(j = 0; j < TAM; j++){
+   			somaWatts += setor.paineis[i][j].geracao;
+   		    if(setor.paineis[i][j].ativo){
+       		    quant_ativos++;
+			}
+		}
+	}
+
+    printf("\n***************RELATORIO*****************\n");
+    printf("*  \t\t\t\t\t*\n*\t\t\t\t\t*\n");
+    printf("*  Paineis Ativados: %d\t\t\t*\n", quant_ativos);
+    printf("*  Paineis Desativados: %d\t\t*\n", (TAM * TAM) - quant_ativos );
+    if(somaWatts > 999999){
+    	printf("*  Total Energ. Ger.: %.2f\t*\n", somaWatts);
+	}
+	else{
+		printf("*  Total Energ. Ger.: %.2f\t\t*\n", somaWatts);
+	}
+	if((somaWatts/(TAM*TAM)) > 999999){
+		printf("*  Media Energ. Ger.: %.2f\t*\n", somaWatts / (TAM*TAM)); //a mÈdia È em relaÁ„o todos os paineis, atÈ os desativados
+	}
+	else{
+		printf("*  Media Energ. Ger.: %.2f\t\t*\n", somaWatts / (TAM*TAM)); //a mÈdia È em relaÁ„o todos os paineis, atÈ os desativados
+	}
+	printf("*  Media Eficiencia: %.2f%%\t\t*\n", setor.eficiencia_setor);
+	if((setor.eficiencia_setor * EFIC_MAX) >= 16){
+		printf("*  EFICIENCIA ALTA\t\t\t*\n");
+	}
+	else{
+		if((setor.eficiencia_setor * EFIC_MAX) >= 15){
+			printf("*  ACIMA DA MEDIA DE EFICIENCIA\t\t*\n");
+		}
+		else{
+			if((setor.eficiencia_setor * EFIC_MAX) >= 14){
+				printf("*  EFICIENCIA MEDIA\t\t\t*\n");
+			}
+			else{
+				if((setor.eficiencia_setor * EFIC_MAX) >= 13){
+					printf("*  ABAIXO DA MEDIA DE EFICIENCIA\t*\n");
+				}
+				else{
+					printf("*  EFICIENCIA BAIXA\t\t\t*\n");
+				}
+			}
+		}
+	}
+	printf("*  \t\t\t\t\t*\n*\t\t\t\t\t*\n*****************************************\n");
+}
+
+void Enfileirar(Fila_est* F, Setor_Painel setor)
+{
+    if(Verifica_Fila_Cheia(*F)) {
+        printf("N√£o podem ser inseridos mais setores, fila cheia.");
+    }
+    else {
+        F->Item[F->Fim] = setor;
+        F->Fim = (F->Fim + 1) % MAX;
+        F->Total++;
+    }
+}
+
+void Empilhar(Pilha_est* P, Setor_Painel setor)
+{
+    if(Verifica_Pilha_Cheia(*P)) {
+        printf("N√£o podem ser inseridos mais setores, pilha cheia.");
+    }
+    else {
+        P->Item[P->Topo] = setor;
+        P->Topo++;
+    }
+}
+
+void Desenfileirar(Fila_est *F, Setor_Painel *setor)
+{
+    if(Verifica_Fila_Vazia(*F)) {
+        printf("Nao h√° setores na fila.");
+    }
+    else {
+        *setor = F->Item[F->Inicio];
+        printf("Setor Removido:\n");
+		Exibir_Setor(*setor);
+		Relatorio_Setor(*setor);
+        F->Inicio = (F->Inicio + 1) % MAX;
+        F->Total--;
+    }
+}
+
+void Desempilhar(Pilha_est *P, Setor_Painel *setor)
+{
+    if(Verifica_Pilha_Vazia(*P)) {
+        printf("Nao h√° setores na pilha.");
+    }
+    else {
+        P->Topo--;
+        *setor = P->Item[P->Topo];
+        printf("Setor Removido:\n");
+		Exibir_Setor(*setor);
+		Relatorio_Setor(*setor);
+    }
+}
+
+void Inverter_Pilha(Pilha_est *PA){
+	Pilha_est PB;
+	Criar_Pilha_Vazia(&PB);
+	
+	Setor_Painel X;
+	
+	if(Verifica_Pilha_Vazia(*PA)){
+		printf("A pilha est· vazia.\n");
+	}
+	else{
+		while(!(Verifica_Pilha_Vazia(*PA))){
+			Desempilhar(&(*PA), &X);
+			Empilhar(&PB, X);
+		}
+		*PA = PB;
+		Criar_Pilha_Vazia(&PB);
+	}
+}
+
+void Inverter_Fila(Fila_est *FA){
+	Pilha_est P;
+	Setor_Painel X;
+	
+	Criar_Pilha_Vazia(&P);
+	
+	if(Verifica_Fila_Vazia(*FA)){
+		printf("A Fila est· vazia.\n");
+	}
+	else{
+		while(!Verifica_Fila_Vazia(*FA)){
+			Desenfileirar(&(*FA), &X);
+			Empilhar(&P, X);
+		}
+		while(!Verifica_Pilha_Vazia(P)){
+			Desempilhar(&P, &X);
+			Enfileirar(&(*FA), X);
+		}
+	}
+}
+
+int Get_Random_Int(int min, int max){
+    int r;
+    const unsigned int range = 1 + max - min;
+    const unsigned int buckets = RAND_MAX / range;
+    const unsigned int limit = buckets * range;
+
+    do{
+        r = rand();
+    } while (r >= limit);
+
+    return min + (r / buckets);
+}
+
 void cls(void){
     #ifdef LINUX
         //c√≥digo especifico para linux
@@ -281,33 +382,52 @@ int Menu (int index, Pilha_est *P, Fila_est *F, Setor_Painel *setor){
 
 		case 3:
 		    Desenfileirar(&(*F), &(*setor));
-		    printf("Setor Removido:\n");
-		    Exibir_Setor(*setor);
 			break;
 		case 4:
 		    Desempilhar(&(*P), &(*setor));
-		    printf("Setor Removido:\n");
-		    Exibir_Setor(*setor);
 		    break;
 
 		case 5:
-		    Exibir_Setor(F->Item[F->Inicio]);
+			if(Verifica_Fila_Vazia(*F)){
+				printf("A Fila esta vazia.\n");
+			} else {
+				Exibir_Setor(F->Item[F->Inicio]);
+			}
 		    break;
 
 		case 6:
-		    Exibir_Setor(P->Item[P->Topo-1]);
+			if(Verifica_Pilha_Vazia(*P)){
+				printf("A Pilha esta vazia.\n");
+			} else {
+				Exibir_Setor(P->Item[P->Topo-1]);	
+			}
 		    break;
+		    
 		case 7:
+			if(Verifica_Fila_Vazia(*F)){
+				printf("A Fila esta vazia.\n");
+			} else {
+				Relatorio_Setor(F->Item[F->Inicio]);
+			}
+            break;
+		    
+		case 8:
+			if(Verifica_Pilha_Vazia(*P)){
+				printf("A Pilha esta vazia.\n");
+			} else {
+				Relatorio_Setor(P->Item[P->Topo-1]);
+			}
             break;
 
-        case 8:
+        case 9:
+        	Inverter_Fila(&(*F));
         	break;
 
-        case 9:
+        case 10:
+        	Inverter_Pilha(&(*P));
         	break;
 
 		default:
-
             erros++;
             break;
 		}
@@ -338,9 +458,11 @@ int main ( ) {
 		printf("3 - Desenfileirar Setor\n");
 		printf("4 - Desempilhar Setor\n");
 		printf("5 - Consultar primeiro Elemento da Fila\n");
-		printf("6 - Consultar elemento que est√° no Topo da Pilha\n");
-		printf("7 - Setores abaixo da eficiencia media\n");
-		printf("8 - Relatorio de um Setor\n");
+		printf("6 - Consultar elemento que est√° no topo da Pilha\n");
+		printf("7 - Relatorio do primeiro Setor da Fila\n");
+		printf("8 - Relatorio do Setor que esta no topo da Pilha\n");
+		printf("9 - Inverter Fila\n");
+		printf("10 - Inverter Pilha\n");
 		printf("=============================================\n");
 
 		scanf("%d", &index);

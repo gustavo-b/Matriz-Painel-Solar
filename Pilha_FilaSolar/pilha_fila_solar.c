@@ -232,11 +232,13 @@ int Menu (int index, Pilha_est *P, Fila_est *F, Setor_Painel *setor){
 			return 0;
 
 		case 1:
-		    Ler_Elemento(&setor);
+		    Ler_Setor(&(*setor) );
 		    Enfileirar(&(*F), *setor);
             break;
 
 		case 2:
+		    Ler_Setor(&(*setor) );
+		    Enfileirar(&(*F), *setor);
 			break;
 
 		case 3:

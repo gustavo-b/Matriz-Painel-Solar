@@ -188,7 +188,7 @@ void Ler_Setor(Setor_Painel *A, Lista_est Lista_Usina) {
         i = Lista_Usina.Item[i].Prox;
     }
 
-    if(i == -1 || A->identificacao_setor != Lista_Usina.Item[i].identificacao_setor) {
+    if(A->identificacao_setor == Lista_Usina.Item[i].identificacao_setor) {
         printf("Codigo de identifcacao ja existe na Lista.");
 
         return Ler_Setor(&(*A), Lista_Usina);

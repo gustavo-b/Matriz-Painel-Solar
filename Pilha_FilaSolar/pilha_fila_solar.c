@@ -28,6 +28,9 @@
 *	7 - Redistribuir de acordo com a eficiencia de cada setor
 *	8 - Gerar um relatório do setor
 **/
+
+int cod_painel = 10000;
+
 typedef struct{
 	int identificacao_painel; // recebe o código do painel de 5 dígitos.
 	int ativo; //recebe 0 {inativo} ou 1 {ativo}
@@ -133,4 +136,181 @@ void Desempilhar(Pilha_est *P, Setor_Painel *setor)
         P->Topo--;
         *setor = P->Item[P->Topo];
     }
+}
+
+int Get_Random_Int(int min, int max){
+    int r;
+    const unsigned int range = 1 + max - min;
+    const unsigned int buckets = RAND_MAX / range;
+    const unsigned int limit = buckets * range;
+
+    do{
+        r = rand();
+    } while (r >= limit);
+
+    return min + (r / buckets);
+}
+
+float Get_Random_Float(){
+    double a = Get_Random_Int(3000, 10000);
+    float r = ((double)rand()/(double)(RAND_MAX)) * a;
+    return r + Get_Random_Int(10000, 12000);
+}
+
+float Calc_Efic(float geracao){
+	return (((geracao / AREA) / EFIC_MAX) / 10);
+}
+
+void Ler_Setor(Setor_Painel *setor) {
+
+	int i = 0, j;
+	float soma_geracao = 0;
+
+	printf("\nEntre com o codigo identificador de 4 digitos do setor: ");
+	scanf("%d", &setor->identificacao_setor);
+
+	for(i = 0; i < TAM; i++){
+		for(j = 0; j < TAM; j++){
+            float temp;
+
+			printf("\nEntre com o codigo identificador de 5 digitos do painel: ");
+			printf("%d", cod_painel);
+			setor->paineis[i][j].identificacao_painel = cod_painel;
+			cod_painel++;
+
+			printf("\nEntre se o painel %d esta ativo: \n0 - NAO\n1 - SIM\n", setor->paineis[i][j].identificacao_painel);
+			scanf("%d", &setor->paineis[i][j].ativo);
+
+			if(setor->paineis[i][j].ativo){
+				printf("\nEntre com quantos Watts o painel %d gerou: ", setor->paineis[i][j].identificacao_painel);
+				temp = Get_Random_Float();
+				printf("%.2f", temp);
+      			setor->paineis[i][j].geracao = temp;
+
+        		setor->paineis[i][j].eficiencia = Calc_Efic(setor->paineis[i][j].geracao);
+        		printf("\nA eficiencia do painel %d e: %.2f%%\n", setor->paineis[i][j].identificacao_painel, setor->paineis[i][j].eficiencia);
+			}
+			else{
+				setor->paineis[i][j].geracao = 0;
+				setor->paineis[i][j].eficiencia = 0;
+			}
+
+			soma_geracao += setor->paineis[i][j].geracao;
+		}
+
+		getchar();
+	}
+
+	soma_geracao = soma_geracao / (TAM*TAM);
+
+	setor->eficiencia_setor = Calc_Efic(soma_geracao);
+}
+
+void cls(void){
+    printf("\e[H\e[2J");
+
+    #ifdef LINUX
+        //código especifico para linux
+        //system ("clear");//poderia ser este mas escolhi este outro pois é mais a cara do C
+        printf("\e[H\e[2J");
+        #elif defined WIN32
+        //código específico para windows
+        system ("cls");
+    #else
+        printf("\e[H\e[2J");
+    #endif
+
+}
+
+int Menu (int index, Pilha_est *P, Fila_est *F, Setor_Painel *setor){
+
+    int escolha, erros = 0, opcao;
+
+    switch (index) {
+
+		case 0:
+		    printf("Obrigado por usar o APOLO MANAGER.");
+			return 0;
+
+		case 1:
+		    Ler_Elemento(&setor);
+		    Enfileirar(&(*F), *setor);
+            break;
+
+		case 2:
+			break;
+
+		case 3:
+			break;
+		case 4:
+		    break;
+
+		case 5:
+		    break;
+
+		case 6:
+		    break;
+		case 7:
+            break;
+
+        case 8:
+        	break;
+
+        case 9:
+        	break;
+
+		default:
+
+            erros++;
+            break;
+		}
+
+		return erros;
+}
+
+int main ( ) {
+	int index = 1, erros = 0, aux;
+	Pilha_est P;
+	Fila_est F;
+	Setor_Painel setor;
+	srand((unsigned int)time(NULL));
+
+	Criar_Fila_Vazia(&F);
+	Criar_Pilha_Vazia(&P);
+
+    printf("************Bem vindo ao Apolo Manager************\n\n");
+
+	//Continua a execução até que se digite 0.
+	while (index != 0 && erros < LIMITE){
+		//Fornece as opções do TAD.
+		printf("=============MENU Apolo Manager=============\n\n");
+		printf("Escolha alguma das opcoes abaixo:\n\n");
+		printf("0 - Sair do Sistema.\n");
+		printf("1 - Inserir Setor na Fila\n");
+		printf("2 - Inserir Setor na Pilha\n");
+		printf("3 - Desenfileirar Setor\n");
+		printf("4 - Desempilhar Setor\n");
+		printf("5 - Consultar Painel no Setor\n");
+		printf("6 - Consultar Setores mais Proximos\n");
+		printf("7 - Setores abaixo da eficiencia media\n");
+		printf("8 - Relatorio de um Setor\n");
+		printf("=============================================\n");
+
+		scanf("%d", &index);
+
+        aux = Menu(index, &P, &F, &setor);
+
+        if(aux){
+            erros += aux;
+            printf("\nErro: Opcao inexistente. Tentativas restantes = %d\n\n", LIMITE - erros);
+        }
+
+
+		getchar();
+		getchar();
+
+		cls();
+	}
+
+	return 0;
 }

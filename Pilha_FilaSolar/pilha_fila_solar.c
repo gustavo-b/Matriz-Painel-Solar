@@ -206,8 +206,47 @@ void Ler_Setor(Setor_Painel *setor) {
 	setor->eficiencia_setor = Calc_Efic(soma_geracao);
 }
 
-void cls(void){
+void Exibir_Setor(Setor_Painel setor){
+    int i, j;
 
+    printf("\t\t\t\t\tSetor %d\n\n", setor.identificacao_setor);
+    printf("\t\t\t\tEficiencia Media: %.2f%%\n\n", setor.eficiencia_setor);
+
+    for(i = 0; i < TAM; i++){
+        for(j = 0; j < TAM; j++){
+            printf("Painel %d", setor.paineis[i][j].identificacao_painel);
+            printf("\t\t");
+        }
+        printf("\n");
+
+        for(j = 0; j < TAM; j++){
+            printf("Ativo: ");
+            if(setor.paineis[i][j].ativo) printf("SIM");
+            else printf("NAO");
+            printf("\t\t");
+        }
+        printf("\n");
+
+        for(j = 0; j < TAM; j++){
+            printf("Ger.: %.2f W", setor.paineis[i][j].geracao );
+            if(setor.paineis[i][j].geracao > 9999 || setor.paineis[i][j].geracao < -999) printf("\t");
+            else printf("\t\t");
+        }
+        printf("\n");
+
+        for(j = 0; j < TAM; j++){
+            printf("Efic.: %.2f%%", setor.paineis[i][j].eficiencia );
+            if(setor.paineis[i][j].eficiencia > 9999 || setor.paineis[i][j].eficiencia < -999) printf("\t");
+            else printf("\t\t");
+        }
+        printf("\n\n");
+    }
+
+    getchar();
+
+}
+
+void cls(void){
     #ifdef LINUX
         //código especifico para linux
         //system ("clear");//poderia ser este mas escolhi este outro pois é mais a cara do C
@@ -218,7 +257,6 @@ void cls(void){
     #else
         printf("\e[H\e[2J");
     #endif
-
 }
 
 int Menu (int index, Pilha_est *P, Fila_est *F, Setor_Painel *setor){
@@ -242,14 +280,22 @@ int Menu (int index, Pilha_est *P, Fila_est *F, Setor_Painel *setor){
 			break;
 
 		case 3:
+		    Desenfileirar(&(*F), &(*setor));
+		    printf("Setor Removido:\n");
+		    Exibir_Setor(*setor);
 			break;
 		case 4:
+		    Desempilhar(&(*P), &(*setor));
+		    printf("Setor Removido:\n");
+		    Exibir_Setor(*setor);
 		    break;
 
 		case 5:
+		    Exibir_Setor(F->Item[F->Inicio]);
 		    break;
 
 		case 6:
+		    Exibir_Setor(P->Item[P->Topo-1]);
 		    break;
 		case 7:
             break;
@@ -291,8 +337,8 @@ int main ( ) {
 		printf("2 - Inserir Setor na Pilha\n");
 		printf("3 - Desenfileirar Setor\n");
 		printf("4 - Desempilhar Setor\n");
-		printf("5 - Consultar Painel no Setor\n");
-		printf("6 - Consultar Setores mais Proximos\n");
+		printf("5 - Consultar primeiro Elemento da Fila\n");
+		printf("6 - Consultar elemento que está no Topo da Pilha\n");
 		printf("7 - Setores abaixo da eficiencia media\n");
 		printf("8 - Relatorio de um Setor\n");
 		printf("=============================================\n");

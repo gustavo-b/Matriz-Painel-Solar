@@ -251,6 +251,7 @@ void Enfileirar(Fila_est* F, Setor_Painel setor)
         F->Item[F->Fim] = setor;
         F->Fim = (F->Fim + 1) % MAX;
         F->Total++;
+        Relatorio_Setor(setor);
     }
 }
 
@@ -262,6 +263,7 @@ void Empilhar(Pilha_est* P, Setor_Painel setor)
     else {
         P->Item[P->Topo] = setor;
         P->Topo++;
+        Relatorio_Setor(setor);
     }
 }
 
@@ -274,7 +276,6 @@ void Desenfileirar(Fila_est *F, Setor_Painel *setor)
         *setor = F->Item[F->Inicio];
         printf("Setor Removido:\n");
 		Exibir_Setor(*setor);
-		Relatorio_Setor(*setor);
         F->Inicio = (F->Inicio + 1) % MAX;
         F->Total--;
     }
@@ -290,7 +291,6 @@ void Desempilhar(Pilha_est *P, Setor_Painel *setor)
         *setor = P->Item[P->Topo];
         printf("Setor Removido:\n");
 		Exibir_Setor(*setor);
-		Relatorio_Setor(*setor);
     }
 }
 

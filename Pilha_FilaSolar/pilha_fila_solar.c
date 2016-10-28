@@ -238,7 +238,7 @@ int Menu (int index, Pilha_est *P, Fila_est *F, Setor_Painel *setor){
 
 		case 2:
 		    Ler_Setor(&(*setor) );
-		    Enfileirar(&(*F), *setor);
+		    Empilhar(&(*P), *setor);
 			break;
 
 		case 3:

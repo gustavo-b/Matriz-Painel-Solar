@@ -59,7 +59,7 @@ typedef struct {
 
 void Criar_Lista_Vazia (Lista_est *Lista_Usina){
     Lista_Usina->Prim = -1;
-    Lista_Usina->Ult = Lista_Usina->Prim;
+    Lista_Usina->Ult = -1;
     Lista_Usina->Total = 0;
     int i;
     for(i = 0; i < MAX - 1; i++){
@@ -90,8 +90,8 @@ void Insere_Elemento_Lista(Lista_est *Lista_Usina, Setor_Painel setor){
 	}
 	else {
 		p = Lista_Usina->Dispo;
-		Lista_Usina->Item[p] = setor;
 		Lista_Usina->Dispo = Lista_Usina->Item[Lista_Usina->Dispo].Prox;
+		Lista_Usina->Item[p] = setor;
 		a = Lista_Usina->Prim;
 		
 		while ((a != -1) && (setor.eficiencia_setor < Lista_Usina->Item[a].eficiencia_setor)) {
@@ -112,6 +112,7 @@ void Insere_Elemento_Lista(Lista_est *Lista_Usina, Setor_Painel setor){
 		else {
 			if (a == Lista_Usina->Prim){
 				Lista_Usina->Item[p].Prox = Lista_Usina->Prim;
+				Lista_Usina->Prim = p;
 			} else {
 				Lista_Usina->Item[p].Prox = a;
 				Lista_Usina->Item[aux].Prox = p;
@@ -188,7 +189,7 @@ void Ler_Setor(Setor_Painel *A, Lista_est Lista_Usina) {
         i = Lista_Usina.Item[i].Prox;
     }
 
-    if(A->identificacao_setor == Lista_Usina.Item[i].identificacao_setor) {
+    if(i != -1 && A->identificacao_setor == Lista_Usina.Item[i].identificacao_setor) {
         printf("Codigo de identifcacao ja existe na Lista.");
 
         return Ler_Setor(&(*A), Lista_Usina);

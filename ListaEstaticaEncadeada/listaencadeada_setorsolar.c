@@ -449,7 +449,7 @@ void Consultar_Elemento_Painel(Lista_est Lista_Usina, int identificacao_painel){
     else {
         i = Lista_Usina.Prim;
 
-        while ((i < Lista_Usina.Ult) && (identificacao_painel > Lista_Usina.Item[i].paineis[0][0].identificacao_painel + 16 ||
+        while ((i != -1) && (identificacao_painel > Lista_Usina.Item[i].paineis[0][0].identificacao_painel + 16 ||
                          identificacao_painel < Lista_Usina.Item[i].paineis[0][0].identificacao_painel))
             i = Lista_Usina.Item[i].Prox;
         if(i != -1) {

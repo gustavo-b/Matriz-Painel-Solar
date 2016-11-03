@@ -372,8 +372,8 @@ void Consultar_Elemento_Setor(Lista_est Lista_Usina, int codigo_setor){
 
 }
 
-void Consultar_Antecessor_Setor(Lista_est Lista_Usina, int codigo_setor, Setor_Painel *A){
-    int i;
+void Consultar_Antecessor_Setor(Lista_est Lista_Usina, int codigo_setor){
+    int i, aux;
 
     if(Verifica_Lista_Vazia(Lista_Usina)) {
         printf("A lista está vazia.");
@@ -381,21 +381,21 @@ void Consultar_Antecessor_Setor(Lista_est Lista_Usina, int codigo_setor, Setor_P
     else {
         i = Lista_Usina.Prim;
 
-        while ((i != -1) && (A->identificacao_setor == codigo_setor)){
-        i = Lista_Usina.Item[i].Prox;
-    }
+        while ((i != -1) && (Lista_Usina.Item[i].identificacao_setor != codigo_setor)){
+        	aux = i;
+			i = Lista_Usina.Item[i].Prox;
+    	}
 
-        if(i != -1) {
-            Consultar_Elemento_Setor(Lista_Usina, Lista_Usina.Item[i - 1].identificacao_setor);
+        if(i != -1 && i != Lista_Usina.Prim) {
+            Consultar_Elemento_Setor(Lista_Usina, Lista_Usina.Item[aux].identificacao_setor);
         }
-
-        else printf("Setor nao encontrado.");
+		else printf("Setor nao encontrado.");
 
     }
 
 }
 
-void Consultar_Subsequente_Setor(Lista_est Lista_Usina, int codigo_setor, Setor_Painel *A){
+void Consultar_Subsequente_Setor(Lista_est Lista_Usina, int codigo_setor){
     int i;
 
     if(Verifica_Lista_Vazia(Lista_Usina)) {
@@ -403,13 +403,12 @@ void Consultar_Subsequente_Setor(Lista_est Lista_Usina, int codigo_setor, Setor_
     }
     else {
         i = Lista_Usina.Prim;
+        while ((i != -1) && (Lista_Usina.Item[i].identificacao_setor != codigo_setor)){
+			i = Lista_Usina.Item[i].Prox;
+    	}
 
-        while ((i != -1) && (A->identificacao_setor == codigo_setor)){
-        i = Lista_Usina.Item[Lista_Usina.Item[i].Prox].Prox;
-    }
-
-        if(i != -1) {
-            Consultar_Elemento_Setor(Lista_Usina, Lista_Usina.Item[i].identificacao_setor);
+        if(Lista_Usina.Item[i].Prox != -1) {
+            Consultar_Elemento_Setor(Lista_Usina, Lista_Usina.Item[Lista_Usina.Item[i].Prox].identificacao_setor);
         }
         else printf("Setor nao encontrado.");
 
@@ -477,7 +476,7 @@ void Efic_Setores(Lista_est Lista_Usina){
 
     int cont = Lista_Usina.Prim;
 
-    while(cont < Lista_Usina.Ult){
+    while(cont != -1){
    		if((Lista_Usina.Item[cont].eficiencia_setor * EFIC_MAX) >= 13){
    			low_effic++;
 			printf("\t\t\t\t***ABAIXO DA MEDIA DE EFICIENCIA***\n");
@@ -494,7 +493,7 @@ void Efic_Setores(Lista_est Lista_Usina){
 				getchar();
 			}
 		}
-		cont++;
+		cont = Lista_Usina.Item[cont].Prox;
 	}
 
 	if(low_effic == 0){
@@ -511,7 +510,7 @@ void Relatorio_Setor(Lista_est Lista_Usina, int codigo_setor){
 	else {
 		p = Lista_Usina.Prim;
 
-		while ((p < Lista_Usina.Ult) && (codigo_setor != Lista_Usina.Item[p].identificacao_setor)) {
+		while ((p != -1) && (codigo_setor != Lista_Usina.Item[p].identificacao_setor)) {
 			p = Lista_Usina.Item[p].Prox;
 		}
 		if (p == -1){
@@ -638,10 +637,10 @@ int Menu (int index, Lista_est *Lista_Usina, Setor_Painel *Setor){
 			int temp_setor;
 		    scanf("%d", &temp_setor);
 		    if(opcao){
-		    	Consultar_Subsequente_Setor(*Lista_Usina, temp_setor, *(&Setor));
+		    	Consultar_Subsequente_Setor(*Lista_Usina, temp_setor);
 			}
 			else{
-				Consultar_Antecessor_Setor(*Lista_Usina, temp_setor, *(&Setor));
+				Consultar_Antecessor_Setor(*Lista_Usina, temp_setor);
 			}
 			break;
 

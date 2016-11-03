@@ -93,7 +93,7 @@ void Insere_Elemento_Lista(Lista_est *Lista_Usina, Setor_Painel setor){
 		Lista_Usina->Dispo = Lista_Usina->Item[Lista_Usina->Dispo].Prox;
 		Lista_Usina->Item[p] = setor;
 		a = Lista_Usina->Prim;
-		
+
 		while ((a != -1) && (setor.eficiencia_setor < Lista_Usina->Item[a].eficiencia_setor)) {
 			aux = a;
 			a = Lista_Usina->Item[a].Prox;
@@ -372,7 +372,7 @@ void Consultar_Elemento_Setor(Lista_est Lista_Usina, int codigo_setor){
 
 }
 
-void Consultar_Antecessor_Setor(Lista_est Lista_Usina, int codigo_setor){
+void Consultar_Antecessor_Setor(Lista_est Lista_Usina, int codigo_setor, Setor_Painel *A){
     int i;
 
     if(Verifica_Lista_Vazia(Lista_Usina)) {
@@ -381,20 +381,21 @@ void Consultar_Antecessor_Setor(Lista_est Lista_Usina, int codigo_setor){
     else {
         i = Lista_Usina.Prim;
 
-        while ((i < Lista_Usina.Ult) && (codigo_setor != Lista_Usina.Item[i].identificacao_setor))
-            i++;
-        if(i < Lista_Usina.Ult && i > Lista_Usina.Prim) {
+        while ((i != -1) && (A->identificacao_setor == codigo_setor)){
+        i = Lista_Usina.Item[i].Prox;
+    }
 
+        if(i != -1) {
             Consultar_Elemento_Setor(Lista_Usina, Lista_Usina.Item[i - 1].identificacao_setor);
-
         }
+
         else printf("Setor nao encontrado.");
 
     }
 
 }
 
-void Consultar_Subsequente_Setor(Lista_est Lista_Usina, int codigo_setor){
+void Consultar_Subsequente_Setor(Lista_est Lista_Usina, int codigo_setor, Setor_Painel *A){
     int i;
 
     if(Verifica_Lista_Vazia(Lista_Usina)) {
@@ -403,12 +404,12 @@ void Consultar_Subsequente_Setor(Lista_est Lista_Usina, int codigo_setor){
     else {
         i = Lista_Usina.Prim;
 
-        while ((i < Lista_Usina.Ult) && (codigo_setor != Lista_Usina.Item[i].identificacao_setor))
-            i++;
-        if(i < Lista_Usina.Ult - 1) {
+        while ((i != -1) && (A->identificacao_setor == codigo_setor)){
+        i = Lista_Usina.Item[Lista_Usina.Item[i].Prox].Prox;
+    }
 
-            Consultar_Elemento_Setor(Lista_Usina, Lista_Usina.Item[i + 1].identificacao_setor);
-
+        if(i != -1) {
+            Consultar_Elemento_Setor(Lista_Usina, Lista_Usina.Item[i].identificacao_setor);
         }
         else printf("Setor nao encontrado.");
 
@@ -450,9 +451,9 @@ void Consultar_Elemento_Painel(Lista_est Lista_Usina, int identificacao_painel){
         i = Lista_Usina.Prim;
 
         while ((i < Lista_Usina.Ult) && (identificacao_painel > Lista_Usina.Item[i].paineis[0][0].identificacao_painel + 16 ||
-                                         identificacao_painel < Lista_Usina.Item[i].paineis[0][0].identificacao_painel))
-            i++;
-        if(i < Lista_Usina.Ult) {
+                         identificacao_painel < Lista_Usina.Item[i].paineis[0][0].identificacao_painel))
+            i = Lista_Usina.Item[i].Prox;
+        if(i != -1) {
             for(j = 0; j < TAM; j++){
                 for(k = 0; k < TAM; k++){
                     if(Lista_Usina.Item[i].paineis[j][k].identificacao_painel == identificacao_painel) {
@@ -511,9 +512,9 @@ void Relatorio_Setor(Lista_est Lista_Usina, int codigo_setor){
 		p = Lista_Usina.Prim;
 
 		while ((p < Lista_Usina.Ult) && (codigo_setor != Lista_Usina.Item[p].identificacao_setor)) {
-			p++;
+			p = Lista_Usina.Item[p].Prox;
 		}
-		if (p == Lista_Usina.Ult){
+		if (p == -1){
 			printf("Setor nao foi encontrado no sistema!\n");
 		}
 		else {
@@ -637,10 +638,10 @@ int Menu (int index, Lista_est *Lista_Usina, Setor_Painel *Setor){
 			int temp_setor;
 		    scanf("%d", &temp_setor);
 		    if(opcao){
-		    	Consultar_Subsequente_Setor(*Lista_Usina, temp_setor);
+		    	Consultar_Subsequente_Setor(*Lista_Usina, temp_setor, *(&Setor));
 			}
 			else{
-				Consultar_Antecessor_Setor(*Lista_Usina, temp_setor);
+				Consultar_Antecessor_Setor(*Lista_Usina, temp_setor, *(&Setor));
 			}
 			break;
 
@@ -652,10 +653,6 @@ int Menu (int index, Lista_est *Lista_Usina, Setor_Painel *Setor){
         	printf("Digite a identificacao do setor a ser gerado relatorio: ");
 		    scanf("%d", &opcao);
         	Relatorio_Setor(*Lista_Usina, opcao);
-        	break;
-
-        case 9:
-
         	break;
 
 //		Case default para tentativas falsas.

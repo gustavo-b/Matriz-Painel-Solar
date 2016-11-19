@@ -70,9 +70,9 @@ void Inserir_Elemento_Arvore(Arvore_Binaria *arvore, Setor_Painel setor) {
         (*arvore)->dir = NULL;
         (*arvore)->Elem = setor;
     } else if ((*arvore)->Elem.eficiencia_setor > setor.eficiencia_setor) {
-        Insere_Elemento_Arvore(&((*arvore)->dir), setor);
+        Inserir_Elemento_Arvore(&((*arvore)->esq), setor);
     } else if ((*arvore)->Elem.eficiencia_setor < setor.eficiencia_setor) {
-        Insere_Elemento_Arvore(&((*arvore)->esq), setor);
+        Inserir_Elemento_Arvore(&((*arvore)->dir), setor);
     } else {
         (*arvore)->Elem = setor;
     }
@@ -159,9 +159,12 @@ void cls(void){
     #endif
 }
 
-int Menu (int index, Arvore_Binaria *arvore,Setor_Painel *setor){
+int Menu (int index){
 
     int escolha, erros = 0, opcao;
+
+    Arvore_Binaria arvore;
+	Setor_Painel setor;
 
     switch (index) {
 
@@ -170,8 +173,8 @@ int Menu (int index, Arvore_Binaria *arvore,Setor_Painel *setor){
 			return 0;
 
 		case 1:
-		    Ler_Setor(&(*setor) );
-		    Insere_Elemento_Arvore(&arvore,setor);
+		    Ler_Setor(&setor);
+		    Inserir_Elemento_Arvore(&arvore, setor);
             break;
 
 		case 2:
@@ -215,8 +218,7 @@ int Menu (int index, Arvore_Binaria *arvore,Setor_Painel *setor){
 
 int main ( ) {
 	int index = 1, erros = 0, aux;
-	Arvore_Binaria arvore;
-	Setor_Painel setor;
+
 	srand((unsigned int)time(NULL));
 
     printf("************Bem vindo ao Apolo Manager************\n\n");
@@ -241,7 +243,7 @@ int main ( ) {
 
 		scanf("%d", &index);
 
-        aux = Menu(index, &arvore, &setor);
+        aux = Menu(index);
 
         if(aux){
             erros += aux;

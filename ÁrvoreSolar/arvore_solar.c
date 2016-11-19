@@ -15,7 +15,7 @@
 /**	Componentes:
 *   Mat:			Nome:
 *   201602493		Gustavo Henrique da Silva Batista
-*   201609824		Saulo de AraÃºjo Calixto
+*   201609824		Saulo de Araujo Calixto
 *
 *	Este programa realiza o controle de dados
 *	hetereogêneos, utilizando como tema o gerenciamentos
@@ -74,12 +74,25 @@ void Inserir_Elemento_Arvore(Arvore_Binaria *arvore, Setor_Painel setor) {
     } else if ((*arvore)->Elem.eficiencia_setor < setor.eficiencia_setor) {
         Inserir_Elemento_Arvore(&((*arvore)->dir), setor);
     } else {
-        (*arvore)->Elem = setor;
+        printf("Já existe o painel.");
     }
 }
 
 float Calc_Efic(float geracao){
 	return (((geracao / AREA) / EFIC_MAX) / 10);
+}
+
+int Get_Random_Int(int min, int max){
+    int r;
+    const unsigned int range = 1 + max - min;
+    const unsigned int buckets = RAND_MAX / range;
+    const unsigned int limit = buckets * range;
+
+    do{
+        r = rand();
+    } while (r >= limit);
+
+    return min + (r / buckets);
 }
 
 float Get_Random_Float(){
@@ -133,18 +146,53 @@ void Ler_Setor(Setor_Painel *setor) {
 	setor->eficiencia_setor = Calc_Efic(soma_geracao);
 }
 
-int Get_Random_Int(int min, int max){
-    int r;
-    const unsigned int range = 1 + max - min;
-    const unsigned int buckets = RAND_MAX / range;
-    const unsigned int limit = buckets * range;
+void Exibir_Setor(Setor_Painel setor){
+    int i, j;
 
-    do{
-        r = rand();
-    } while (r >= limit);
+    printf("\t\t\t\t\tSetor %d\n\n", setor.identificacao_setor);
+    printf("\t\t\t\tEficiencia Media: %.2f%%\n\n", setor.eficiencia_setor);
 
-    return min + (r / buckets);
+    for(i = 0; i < TAM; i++){
+        for(j = 0; j < TAM; j++){
+            printf("Painel %d", setor.paineis[i][j].identificacao_painel);
+            printf("\t\t");
+        }
+        printf("\n");
+
+        for(j = 0; j < TAM; j++){
+            printf("Ativo: ");
+            if(setor.paineis[i][j].ativo) printf("SIM");
+            else printf("NAO");
+            printf("\t\t");
+        }
+        printf("\n");
+
+        for(j = 0; j < TAM; j++){
+            printf("Ger.: %.2f W", setor.paineis[i][j].geracao );
+            if(setor.paineis[i][j].geracao > 9999 || setor.paineis[i][j].geracao < -999) printf("\t");
+            else printf("\t\t");
+        }
+        printf("\n");
+
+        for(j = 0; j < TAM; j++){
+            printf("Efic.: %.2f%%", setor.paineis[i][j].eficiencia );
+            if(setor.paineis[i][j].eficiencia > 9999 || setor.paineis[i][j].eficiencia < -999) printf("\t");
+            else printf("\t\t");
+        }
+        printf("\n\n");
+    }
+
+    getchar();
 }
+
+void PreOrdem(Arvore_Binaria arvore){
+	if(arvore != NULL){
+		Exibir_Setor(arvore->Elem);
+		PreOrdem(arvore->esq);
+		PreOrdem(arvore->dir);
+	}
+}
+
 
 void cls(void){
     #ifdef LINUX
@@ -178,7 +226,7 @@ int Menu (int index){
             break;
 
 		case 2:
-
+		    PreOrdem(arvore);
 			break;
 
 		case 3:

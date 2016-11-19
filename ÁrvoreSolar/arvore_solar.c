@@ -46,35 +46,6 @@ typedef struct{
 	int identificacao_setor; // recebe o cÃ³digo do setor de atÃ© 4 dÃ­gitos.
     Painel paineis[TAM][TAM]; //matriz simÃ©trica de paineis pertencentes ao vetor
     float eficiencia_setor; //quantidade de energia gerada pelo setor
-<<<<<<< HEAD
-}Setor_Painel;
-
-typedef struct nd{
-    Setor_Painel Elem;
-    struct nd *esq, *dir;
-    }Nodo;
-
-typedef Nodo *Arvore_Binaria;
-
-int Verifica_Arvore_Vazia(Arvore_Binaria arvore) {
-    return (arvore == NULL);
-}
-
-void Inserir_Elemento_Arvore(Arvore_Binaria *arvore, Setor_Painel setor) {
-
-    if((*arvore) == NULL) {
-        (*arvore) = (Arvore_Binaria) malloc(sizeof (Nodo));
-        (*arvore)->esq = NULL;
-        (*arvore)->dir = NULL;
-        (*arvore)->Elem = setor;
-    } else if ((*arvore)->Elem.eficiencia_setor > setor.eficiencia_setor) {
-        Inserir_Elemento_Arvore(&((*arvore)->esq), setor);
-    } else if ((*arvore)->Elem.eficiencia_setor < setor.eficiencia_setor) {
-        Inserir_Elemento_Arvore(&((*arvore)->dir), setor);
-    } else {
-        printf("Já existe o painel.");
-    }
-=======
 }Setor_Painel;
 
 typedef struct nd{
@@ -102,12 +73,10 @@ void Inserir_Elemento_Arvore(Arvore_Binaria *arvore, Setor_Painel setor) {
     } else {
         (*arvore)->Elem = setor;
     }
->>>>>>> 509db2276461f8b32c41d6cbb6cda1ea9785597d
 }
 
 float Calc_Efic(float geracao){
 	return (((geracao / AREA) / EFIC_MAX) / 10);
-<<<<<<< HEAD
 }
 
 int Get_Random_Int(int min, int max){
@@ -123,10 +92,6 @@ int Get_Random_Int(int min, int max){
     return min + (r / buckets);
 }
 
-=======
-}
-
->>>>>>> 509db2276461f8b32c41d6cbb6cda1ea9785597d
 float Get_Random_Float(){
     double a = Get_Random_Int(3000, 10000);
     float r = ((double)rand()/(double)(RAND_MAX)) * a;
@@ -176,12 +141,10 @@ void Ler_Setor(Setor_Painel *setor) {
 	soma_geracao = soma_geracao / (TAM*TAM);
 
 	setor->eficiencia_setor = Calc_Efic(soma_geracao);
-<<<<<<< HEAD
 }
 
 void Exibir_Setor(Setor_Painel setor){
     int i, j;
-=======
 }
 
 int Get_Random_Int(int min, int max){
@@ -189,12 +152,10 @@ int Get_Random_Int(int min, int max){
     const unsigned int range = 1 + max - min;
     const unsigned int buckets = RAND_MAX / range;
     const unsigned int limit = buckets * range;
->>>>>>> 509db2276461f8b32c41d6cbb6cda1ea9785597d
 
     printf("\t\t\t\t\tSetor %d\n\n", setor.identificacao_setor);
     printf("\t\t\t\tEficiencia Media: %.2f%%\n\n", setor.eficiencia_setor);
 
-<<<<<<< HEAD
     for(i = 0; i < TAM; i++){
         for(j = 0; j < TAM; j++){
             printf("Painel %d", setor.paineis[i][j].identificacao_painel);

@@ -185,8 +185,8 @@ void Exibir_Setor(Setor_Painel setor){
     }
 
     getchar();
-}
 
+}
 
 void Relatorio_Setor(Setor_Painel setor){
 	int i, j, quant_ativos = 0;
@@ -297,9 +297,9 @@ void Desempilhar(Pilha_est *P, Setor_Painel *setor)
 void Inverter_Pilha(Pilha_est *PA){
 	Pilha_est PB;
 	Criar_Pilha_Vazia(&PB);
-
+	
 	Setor_Painel X;
-
+	
 	if(Verifica_Pilha_Vazia(*PA)){
 		printf("A pilha está vazia.\n");
 	}
@@ -316,9 +316,9 @@ void Inverter_Pilha(Pilha_est *PA){
 void Inverter_Fila(Fila_est *FA){
 	Pilha_est P;
 	Setor_Painel X;
-
+	
 	Criar_Pilha_Vazia(&P);
-
+	
 	if(Verifica_Fila_Vazia(*FA)){
 		printf("A Fila está vazia.\n");
 	}
@@ -399,10 +399,10 @@ int Menu (int index, Pilha_est *P, Fila_est *F, Setor_Painel *setor){
 			if(Verifica_Pilha_Vazia(*P)){
 				printf("A Pilha esta vazia.\n");
 			} else {
-				Exibir_Setor(P->Item[P->Topo-1]);
+				Exibir_Setor(P->Item[P->Topo-1]);	
 			}
 		    break;
-
+		    
 		case 7:
 			if(Verifica_Fila_Vazia(*F)){
 				printf("A Fila esta vazia.\n");
@@ -410,7 +410,7 @@ int Menu (int index, Pilha_est *P, Fila_est *F, Setor_Painel *setor){
 				Relatorio_Setor(F->Item[F->Inicio]);
 			}
             break;
-
+		    
 		case 8:
 			if(Verifica_Pilha_Vazia(*P)){
 				printf("A Pilha esta vazia.\n");

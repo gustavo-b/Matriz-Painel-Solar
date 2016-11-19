@@ -71,7 +71,7 @@ void Inserir_Elemento_Arvore(Arvore_Binaria *arvore, Setor_Painel setor) {
     } else if ((*arvore)->Elem.eficiencia_setor < setor.eficiencia_setor) {
         Inserir_Elemento_Arvore(&((*arvore)->dir), setor);
     } else {
-        (*arvore)->Elem = setor;
+        printf("Já existe o painel.");
     }
 }
 
@@ -145,13 +145,6 @@ void Ler_Setor(Setor_Painel *setor) {
 
 void Exibir_Setor(Setor_Painel setor){
     int i, j;
-}
-
-int Get_Random_Int(int min, int max){
-    int r;
-    const unsigned int range = 1 + max - min;
-    const unsigned int buckets = RAND_MAX / range;
-    const unsigned int limit = buckets * range;
 
     printf("\t\t\t\t\tSetor %d\n\n", setor.identificacao_setor);
     printf("\t\t\t\tEficiencia Media: %.2f%%\n\n", setor.eficiencia_setor);
@@ -198,11 +191,6 @@ void PreOrdem(Arvore_Binaria arvore){
 }
 
 
-=======
-    return min + (r / buckets);
-}
-
->>>>>>> 509db2276461f8b32c41d6cbb6cda1ea9785597d
 void cls(void){
     #ifdef LINUX
         //cÃ³digo especifico para linux
